@@ -1,15 +1,14 @@
 // src/utils/validateEnv.js
 
-function validateEnv() {
-  const requiredVars = ["PROJECTS_BASE_PATH", "PORT"];
-  const missingVars = requiredVars.filter((key) => !process.env[key]);
+const requiredEnvVariables = ["PROJECTS_BASE_PATH", "PORT"];
 
-  if (missingVars.length) {
-    console.error(
-      `Missing required environment variables: ${missingVars.join(", ")}`
-    );
-    process.exit(1);
-  }
+function validateEnv() {
+  requiredEnvVariables.forEach((variable) => {
+    if (!process.env[variable]) {
+      console.error(`Error: Missing required environment variable ${variable}`);
+      process.exit(1);
+    }
+  });
 }
 
 module.exports = validateEnv;
