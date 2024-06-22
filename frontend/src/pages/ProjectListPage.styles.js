@@ -15,4 +15,5 @@ export const ProjectListPageContainer = styled.div`
 export const ProjectListPageHeading = styled.h2`
   font-size: 24px;
   color: ${theme.colors.darkGrey};
+  margin-bottom: 20px;
 `;

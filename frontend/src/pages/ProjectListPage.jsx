@@ -10,7 +10,7 @@ import {
 const ProjectListPage = () => {
     return (
         <ProjectListPageContainer>
-            <ProjectListPageHeading>Project List Page</ProjectListPageHeading>
+            <ProjectListPageHeading>Project List</ProjectListPageHeading>
             <ProjectList />
         </ProjectListPageContainer>
     );

@@ -1,7 +1,6 @@
 // frontend/src/pages/HomePage.jsx
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import {
     HomePageContainer,
     HomePageHeading,
@@ -15,31 +14,23 @@ import {
 const HomePage = () => {
     return (
         <HomePageContainer>
-            <HomePageHeading>Home Page</HomePageHeading>
+            <HomePageHeading>Files Utilities App</HomePageHeading>
             <Nav>
                 <NavList>
                     <li>
-                        <Section>
+                        <Section to="/create-project">
                             <SectionTitle>
-                                <Link to="/create-project">Create Project</Link>
+                                Create Project
                             </SectionTitle>
                             <SectionContent>Create a new project.</SectionContent>
                         </Section>
                     </li>
                     <li>
-                        <Section>
+                        <Section to="/projects">
                             <SectionTitle>
-                                <Link to="/projects">Select Project</Link>
+                                Select Project
                             </SectionTitle>
                             <SectionContent>Select an existing project.</SectionContent>
-                        </Section>
-                    </li>
-                    <li>
-                        <Section>
-                            <SectionTitle>
-                                <Link to="/options">Options</Link>
-                            </SectionTitle>
-                            <SectionContent>Various options (Not Implemented).</SectionContent>
                         </Section>
                     </li>
                 </NavList>

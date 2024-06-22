@@ -27,9 +27,26 @@ export const ProjectItemContainer = styled.div`
   margin: 10px 0;
   background-color: ${theme.colors.darkGrey};
   border: 3px solid ${theme.colors.black};
-  box-shadow: inset 0 -3px 0 0 ${theme.colors.orange};
   border-radius: 10px;
   position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 3px solid ${theme.colors.orange};
+    border-radius: 10px;
+    z-index: -1;
+  }
 `;
 
 export const ProjectItemLink = styled(Link)`
@@ -41,7 +58,7 @@ export const ProjectItemLink = styled(Link)`
   width: 100%;
   height: 100%;
   padding: 20px;
-  position: absolute;
+  position: relative;
   left: 0;
   top: 0;
 
@@ -55,17 +72,17 @@ export const ProjectItemText = styled.div`
   text-align: center;
   font-weight: bold;
   font-size: 1.5rem;
-  color: ${theme.colors.white};
+  color: ${theme.colors.orange};
 `;
 
 export const DeleteButton = styled.button`
   padding: 10px;
   background-color: ${theme.colors.orange};
-  border: 2px solid ${theme.colors.darkGrey};
+  border: 2px solid ${theme.colors.black};
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
-  color: ${theme.colors.white};
+  color: ${theme.colors.black};
   position: relative;
   z-index: 1;
 
