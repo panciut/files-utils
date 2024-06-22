@@ -1,12 +1,14 @@
-//frontend/src/components/ProjectList.jsx
+// frontend/src/components/ProjectList.jsx
 
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { fetchProjects } from '../services/api';
+import { fetchProjects, removeProject } from '../services/api';
 import {
     ProjectListContainer,
     ProjectListHeading,
-    ProjectListItem
+    ProjectItemContainer,
+    ProjectItemLink,
+    ProjectItemText,
+    DeleteButton
 } from './ProjectList.styles';
 
 const ProjectList = () => {
@@ -20,16 +22,30 @@ const ProjectList = () => {
         loadProjects();
     }, []);
 
+    const handleDelete = async (projectName, event) => {
+        event.stopPropagation();
+        const confirmed = window.confirm(`Are you sure you want to delete the project "${projectName}"?`);
+        if (confirmed) {
+            try {
+                await removeProject(projectName);
+                setProjects(projects.filter(project => project !== projectName));
+            } catch (error) {
+                console.error('Failed to delete project', error);
+            }
+        }
+    };
+
     return (
         <ProjectListContainer>
             <ProjectListHeading>Projects</ProjectListHeading>
-            <ul>
-                {projects.map((project) => (
-                    <ProjectListItem key={project}>
-                        <Link to={`/project/${project}`}>{project}</Link>
-                    </ProjectListItem>
-                ))}
-            </ul>
+            {projects.map((project) => (
+                <ProjectItemContainer key={project}>
+                    <ProjectItemLink to={`/project/${project}`}>
+                        <ProjectItemText>{project}</ProjectItemText>
+                    </ProjectItemLink>
+                    <DeleteButton onClick={(event) => handleDelete(project, event)}>Delete</DeleteButton>
+                </ProjectItemContainer>
+            ))}
         </ProjectListContainer>
     );
 };

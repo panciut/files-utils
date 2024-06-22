@@ -1,14 +1,18 @@
-//frontend/src/pages/ProjectListPage.jsx
+// frontend/src/pages/ProjectListPage.jsx
 
 import React from 'react';
 import ProjectList from '../components/ProjectList';
+import {
+    ProjectListPageContainer,
+    ProjectListPageHeading
+} from './ProjectListPage.styles';
 
 const ProjectListPage = () => {
     return (
-        <div>
-            <h1>Project List</h1>
+        <ProjectListPageContainer>
+            <ProjectListPageHeading>Project List Page</ProjectListPageHeading>
             <ProjectList />
-        </div>
+        </ProjectListPageContainer>
     );
 };
 

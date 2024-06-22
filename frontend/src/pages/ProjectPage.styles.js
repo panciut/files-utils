@@ -6,6 +6,10 @@ export const ProjectPageContainer = styled.div`
   padding: 20px;
   text-align: center;
   background-color: ${theme.colors.white};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 80px; /* Ensure navbar does not cover content */
 `;
 
 export const ProjectPageHeading = styled.h1`
@@ -13,10 +17,38 @@ export const ProjectPageHeading = styled.h1`
   color: ${theme.colors.darkGrey};
 `;
 
-export const ProjectDetails = styled.div`
+export const CollapsibleSection = styled.div`
+  width: 80%;
   margin: 20px 0;
-  font-size: 18px;
+  padding: 20px;
+  background-color: ${theme.colors.lightGrey};
+  border: 2px solid ${theme.colors.darkGrey};
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+`;
+
+export const SectionTitle = styled.h2`
+  font-size: 24px;
   color: ${theme.colors.darkGrey};
+  cursor: pointer;
+  margin: 0;
+  text-align: left;
+`;
+
+export const SectionContent = styled.div`
+  margin-top: 10px;
+  display: ${(props) => (props.isCollapsed ? "none" : "block")};
+`;
+
+export const FileListContainer = styled.div`
+  max-height: 300px;
+  overflow-y: auto;
+  width: 100%;
+  padding: 10px;
+  background-color: ${theme.colors.white};
+  border: 1px solid ${theme.colors.darkGrey};
+  border-radius: 5px;
+  box-sizing: border-box;
 `;
 
 export const FileList = styled.ul`
@@ -29,6 +61,12 @@ export const FileList = styled.ul`
   }
 `;
 
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+
 export const Button = styled.button`
   margin: 10px;
   padding: 10px 20px;
@@ -36,7 +74,7 @@ export const Button = styled.button`
   color: ${theme.colors.white};
   background-color: ${theme.colors.orange};
   border: 2px solid ${theme.colors.darkGrey};
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
 
   &:hover {
@@ -45,6 +83,7 @@ export const Button = styled.button`
 `;
 
 export const InputContainer = styled.div`
+  width: 100%;
   margin: 20px 0;
   text-align: left;
   color: ${theme.colors.darkGrey};

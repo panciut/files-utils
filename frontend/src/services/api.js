@@ -1,5 +1,4 @@
 // frontend/src/services/api.js
-// /frontend/src/services/api.js
 
 export const fetchProjects = async () => {
   try {
@@ -116,6 +115,21 @@ export const getProjectFiles = async (projectName) => {
     return data;
   } catch (error) {
     console.error("Error fetching project files:", error);
+    throw error;
+  }
+};
+
+export const removeProject = async (projectName) => {
+  try {
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const response = await fetch(`${apiUrl}/projects/${projectName}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete project");
+    }
+  } catch (error) {
+    console.error("Error deleting project:", error);
     throw error;
   }
 };

@@ -7,6 +7,9 @@ export const HomePageContainer = styled.div`
   padding: 20px;
   text-align: center;
   background-color: ${theme.colors.white};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 80px; /* Add margin to avoid being covered by Navbar */
 `;
 
@@ -22,6 +25,9 @@ export const Nav = styled.nav`
 export const NavList = styled.ul`
   list-style-type: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   li {
     margin: 10px 0;
@@ -61,30 +67,4 @@ export const SectionContent = styled.p`
   font-size: 1rem;
   color: ${theme.colors.darkGrey};
   text-align: center;
-`;
-
-export const ProjectListContainer = styled.div`
-  padding: 20px;
-  text-align: center;
-  background-color: ${theme.colors.white};
-  margin-top: 40px; /* Add margin to separate from other content */
-`;
-
-export const ProjectListHeading = styled.h2`
-  font-size: 24px;
-  color: ${theme.colors.darkGrey};
-`;
-
-export const ProjectListItem = styled.li`
-  list-style-type: none;
-  margin: 10px 0;
-
-  a {
-    text-decoration: none;
-    color: ${theme.colors.orange};
-
-    &:hover {
-      color: ${theme.colors.darkOrange};
-    }
-  }
 `;
