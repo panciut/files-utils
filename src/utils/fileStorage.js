@@ -27,6 +27,49 @@ function addFilePaths(projectName, filePaths, baseDir) {
 }
 
 /**
+ * Removes file paths from the project's paths.json.
+ * @param {string} projectName - Name of the project.
+ * @param {string[]} filePaths - Array of absolute paths to be removed.
+ * @param {string} baseDir - Base directory for the projects.
+ */
+function removeFilePaths(projectName, filePaths, baseDir) {
+  const projectDir = path.join(baseDir, projectName);
+  const pathsFilePath = path.join(projectDir, "paths.json");
+
+  if (fs.existsSync(pathsFilePath)) {
+    let paths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
+    paths = paths.filter((p) => !filePaths.includes(p));
+    fs.writeFileSync(pathsFilePath, JSON.stringify(paths, null, 2));
+  }
+}
+
+/**
+ * Creates a new project directory.
+ * @param {string} projectName - Name of the project.
+ * @param {string} baseDir - Base directory for the projects.
+ */
+function createProject(projectName, baseDir) {
+  const projectDir = path.join(baseDir, projectName);
+
+  if (!fs.existsSync(projectDir)) {
+    fs.mkdirSync(projectDir, { recursive: true });
+  }
+}
+
+/**
+ * Removes the project directory.
+ * @param {string} projectName - Name of the project.
+ * @param {string} baseDir - Base directory for the projects.
+ */
+function removeProject(projectName, baseDir) {
+  const projectDir = path.join(baseDir, projectName);
+
+  if (fs.existsSync(projectDir)) {
+    fs.rmSync(projectDir, { recursive: true, force: true });
+  }
+}
+
+/**
  * Retrieves the file paths for a project from paths.json.
  * @param {string} projectName - Name of the project.
  * @param {string} baseDir - Base directory for the projects.
@@ -43,4 +86,10 @@ function getFilePaths(projectName, baseDir) {
   return [];
 }
 
-module.exports = { addFilePaths, getFilePaths };
+module.exports = {
+  addFilePaths,
+  removeFilePaths,
+  createProject,
+  removeProject,
+  getFilePaths,
+};
