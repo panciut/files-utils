@@ -1,9 +1,9 @@
-// src/mergeFilesCli.js
+// src/cli/mergeFilesCli.js
 
 require("dotenv").config();
 const path = require("path");
-const { getFilePaths } = require("./utils/fileStorage");
-const mergeFiles = require("./utils/fileMerger");
+const { getFilePaths } = require("../utils/fileStorage");
+const mergeFiles = require("../utils/fileMerger");
 
 const baseDir = process.env.PROJECTS_BASE_PATH || "./projects";
 

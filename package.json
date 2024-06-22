@@ -4,10 +4,10 @@
   "description": "A Node.js application to merge multiple files into a single markdown file",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "merge-files": "node src/mergeFilesCli.js"
+    "merge-files": "node src/cli/mergeFilesCli.js",
+    "create-project": "node src/cli/createProjectCli.js"
   },
   "keywords": [],
   "author": "",

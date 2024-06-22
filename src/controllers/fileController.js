@@ -71,6 +71,7 @@ const removeFilePathsController = (req, res) => {
  */
 const createProjectController = (req, res) => {
   const { projectName } = req.body;
+
   try {
     createProject(projectName, baseDir);
     res
@@ -125,10 +126,32 @@ const mergeFilesController = (req, res) => {
   }
 };
 
+/**
+ * Controller to get all file paths in a project.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+const getAllFilesController = (req, res) => {
+  const { projectName } = req.body;
+
+  try {
+    const filePaths = getFilePaths(projectName, baseDir);
+    res.status(200).json({
+      message: `File paths for project ${projectName}`,
+      filePaths,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to get file paths", error: error.message });
+  }
+};
+
 module.exports = {
   addFilePathsController,
   removeFilePathsController,
   createProjectController,
   removeProjectController,
   mergeFilesController,
+  getAllFilesController,
 };

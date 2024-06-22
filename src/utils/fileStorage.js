@@ -44,16 +44,22 @@ function removeFilePaths(projectName, filePaths, baseDir) {
 }
 
 /**
- * Creates a new project directory.
+ * Creates a new project directory with an empty paths.json file.
  * @param {string} projectName - Name of the project.
  * @param {string} baseDir - Base directory for the projects.
  */
 function createProject(projectName, baseDir) {
+  if (!projectName) {
+    throw new Error("Project name is required");
+  }
   const projectDir = path.join(baseDir, projectName);
 
   if (!fs.existsSync(projectDir)) {
     fs.mkdirSync(projectDir, { recursive: true });
   }
+
+  const pathsFilePath = path.join(projectDir, "paths.json");
+  fs.writeFileSync(pathsFilePath, JSON.stringify([], null, 2));
 }
 
 /**
