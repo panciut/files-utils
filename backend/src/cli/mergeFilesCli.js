@@ -5,7 +5,7 @@ const path = require("path");
 const { getFilePaths } = require("../utils/fileStorage");
 const mergeFiles = require("../utils/fileMerger");
 
-const baseDir = process.env.PROJECTS_BASE_PATH || "./projects";
+const baseDir = process.env.PROJECTS_BASE_PATH;
 
 const projectName = process.argv[2];
 

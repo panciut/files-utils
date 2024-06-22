@@ -27,7 +27,7 @@ function mergeFiles(
 
   filePaths.forEach((filePath, index) => {
     const fileContent = fs.readFileSync(filePath, "utf-8");
-    const comment = `<!-- ${filePath} -->\n\n`;
+    const comment = `# ${filePath}\n\n`;
 
     if (index > 0) {
       writeStream.write("\n\n");

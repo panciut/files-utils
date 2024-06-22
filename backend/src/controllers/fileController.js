@@ -9,7 +9,7 @@ const {
 } = require("../utils/fileStorage");
 const mergeFiles = require("../utils/fileMerger");
 
-const baseDir = process.env.PROJECTS_BASE_PATH || "./projects";
+const baseDir = process.env.PROJECTS_BASE_PATH;
 
 /**
  * Controller to handle adding file paths to a project.
@@ -77,12 +77,10 @@ const createProjectController = (req, res) => {
   try {
     const exists = createProject(projectName, baseDir);
     if (exists) {
-      return res
-        .status(200)
-        .json({
-          message: `Project ${projectName} already exists`,
-          warning: true,
-        });
+      return res.status(200).json({
+        message: `Project ${projectName} already exists`,
+        warning: true,
+      });
     }
     res
       .status(200)

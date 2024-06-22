@@ -3,7 +3,7 @@
 require("dotenv").config();
 const { createProject } = require("../utils/fileStorage");
 
-const baseDir = process.env.PROJECTS_BASE_PATH || "./projects";
+const baseDir = process.env.PROJECTS_BASE_PATH;
 
 const projectName = process.argv[2];
 

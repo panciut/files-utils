@@ -14,9 +14,10 @@ pids/
 *.pid.lock
 
 # Environment variables
-.env
+backend/.env
+frontend/.env
 
-# Directory for project outputs
+# Projects directory
 projects/
 
 # Optional npm cache directory
@@ -48,3 +49,8 @@ coverage/
 
 # Optional stylelint cache
 .stylelintcache
+
+# Build output directories
+frontend/build/
+frontend/dist/
+backend/dist/
