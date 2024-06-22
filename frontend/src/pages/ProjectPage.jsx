@@ -3,6 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProjectDetails, getProjectFiles, mergeFiles, addFilePaths, removeFilePaths } from '../services/api';
+import {
+    ProjectPageContainer,
+    ProjectPageHeading,
+    ProjectDetails,
+    FileList,
+    Button,
+    InputContainer
+} from './ProjectPage.styles';
 
 const ProjectPage = () => {
     const { projectName } = useParams();
@@ -60,24 +68,24 @@ const ProjectPage = () => {
     };
 
     return (
-        <div>
-            <h1>Project: {projectName}</h1>
+        <ProjectPageContainer>
+            <ProjectPageHeading>Project: {projectName}</ProjectPageHeading>
             {projectDetails && (
-                <div>
+                <ProjectDetails>
                     <p>Number of Files: {projectDetails.project.numberOfFiles}</p>
                     <p>Total Size: {projectDetails.project.size} bytes</p>
-                </div>
+                </ProjectDetails>
             )}
             <div>
                 <h2>Files</h2>
-                <ul>
+                <FileList>
                     {projectFiles.map((filePath) => (
                         <li key={filePath}>{filePath}</li>
                     ))}
-                </ul>
+                </FileList>
             </div>
-            <button onClick={handleMergeFiles}>Merge Files</button>
-            <div>
+            <Button onClick={handleMergeFiles}>Merge Files</Button>
+            <InputContainer>
                 <h2>Add Files</h2>
                 <input
                     type="text"
@@ -85,9 +93,9 @@ const ProjectPage = () => {
                     onChange={(e) => setFilePaths(e.target.value)}
                     placeholder="Comma separated file paths"
                 />
-                <button onClick={handleAddFiles}>Add Files</button>
-            </div>
-            <div>
+                <Button onClick={handleAddFiles}>Add Files</Button>
+            </InputContainer>
+            <InputContainer>
                 <h2>Remove Files</h2>
                 <input
                     type="text"
@@ -95,9 +103,9 @@ const ProjectPage = () => {
                     onChange={(e) => setRemovePaths(e.target.value)}
                     placeholder="Comma separated file paths"
                 />
-                <button onClick={handleRemoveFiles}>Remove Files</button>
-            </div>
-        </div>
+                <Button onClick={handleRemoveFiles}>Remove Files</Button>
+            </InputContainer>
+        </ProjectPageContainer>
     );
 };
 

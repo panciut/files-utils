@@ -3,6 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchProjects } from '../services/api';
+import {
+    ProjectListContainer,
+    ProjectListHeading,
+    ProjectListItem
+} from './ProjectList.styles';
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
@@ -16,16 +21,16 @@ const ProjectList = () => {
     }, []);
 
     return (
-        <div>
-            <h2>Projects</h2>
+        <ProjectListContainer>
+            <ProjectListHeading>Projects</ProjectListHeading>
             <ul>
                 {projects.map((project) => (
-                    <li key={project}>
+                    <ProjectListItem key={project}>
                         <Link to={`/project/${project}`}>{project}</Link>
-                    </li>
+                    </ProjectListItem>
                 ))}
             </ul>
-        </div>
+        </ProjectListContainer>
     );
 };
 

@@ -1,39 +1,45 @@
-//frontend/src/pages/CreateProjectPage.jsx
+// frontend/src/pages/CreateProjectPage.jsx
 
 import React, { useState } from 'react';
 import { createProject } from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import {
+    CreateProjectContainer,
+    CreateProjectHeading,
+    FormContainer,
+    FormInput,
+    FormButton
+} from './CreateProjectPage.styles';
 
 const CreateProjectPage = () => {
     const [projectName, setProjectName] = useState('');
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await createProject(projectName);
-            alert(`Project ${projectName} created successfully!`);
-            navigate('/');
+            alert('Project created successfully');
+            setProjectName('');
         } catch (error) {
-            alert('Failed to create project.');
-            console.error(error);
+            console.error('Failed to create project', error);
         }
     };
 
     return (
-        <div>
-            <h1>Create Project</h1>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
-                    placeholder="Project Name"
-                    required
-                />
-                <button type="submit">Create</button>
-            </form>
-        </div>
+        <CreateProjectContainer>
+            <CreateProjectHeading>Create Project</CreateProjectHeading>
+            <FormContainer>
+                <form onSubmit={handleSubmit}>
+                    <FormInput
+                        type="text"
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
+                        placeholder="Project Name"
+                        required
+                    />
+                    <FormButton type="submit">Create Project</FormButton>
+                </form>
+            </FormContainer>
+        </CreateProjectContainer>
     );
 };
 
