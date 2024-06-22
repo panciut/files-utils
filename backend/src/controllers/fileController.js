@@ -11,11 +11,6 @@ const mergeFiles = require("../utils/fileMerger");
 
 const baseDir = process.env.PROJECTS_BASE_PATH;
 
-/**
- * Controller to handle adding file paths to a project.
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- */
 const addFilePathsController = (req, res) => {
   const projectName = req.params.projectName;
   const { filePaths } = req.body;
@@ -27,10 +22,16 @@ const addFilePathsController = (req, res) => {
   }
 
   try {
-    const message = addFilePaths(projectName, filePaths, baseDir);
+    const { message, validFilePaths, invalidFilePaths } = addFilePaths(
+      projectName,
+      filePaths,
+      baseDir
+    );
     res.status(200).json({
       message: `File paths added to project ${projectName}`,
       warning: message,
+      validFilePaths,
+      invalidFilePaths,
     });
   } catch (error) {
     res
@@ -252,7 +253,6 @@ const getProjectDetailsController = (req, res) => {
         .json({ message: `Project ${projectName} not found` });
     }
     const filePaths = getFilePaths(projectName, baseDir);
-    console.log(filePaths);
     const size = filePaths.reduce((total, filePath) => {
       return total + fs.statSync(filePath).size;
     }, 0);

@@ -10,6 +10,7 @@ const ProjectPage = () => {
     const [projectFiles, setProjectFiles] = useState([]);
     const [filePaths, setFilePaths] = useState('');
     const [removePaths, setRemovePaths] = useState('');
+    const [invalidFilePaths, setInvalidFilePaths] = useState([]);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -36,9 +37,10 @@ const ProjectPage = () => {
 
     const handleAddFiles = async () => {
         try {
-            await addFilePaths(projectName, filePaths.split(','));
+            const data = await addFilePaths(projectName, filePaths.split(','));
             alert('Files added successfully');
             setFilePaths('');
+            setInvalidFilePaths(data.invalidFilePaths);
         } catch (error) {
             console.error('Failed to add files', error);
         }
@@ -81,6 +83,16 @@ const ProjectPage = () => {
                     placeholder="Comma separated file paths"
                 />
                 <button onClick={handleAddFiles}>Add Files</button>
+                {invalidFilePaths.length > 0 && (
+                    <div>
+                        <h3>Invalid File Paths:</h3>
+                        <ul>
+                            {invalidFilePaths.map((filePath) => (
+                                <li key={filePath}>{filePath}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
             <div>
                 <h2>Remove Files</h2>

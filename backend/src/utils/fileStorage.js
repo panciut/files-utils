@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 /**
- * Adds file paths to the project's paths.json if they aren't already present.
+ * Adds file paths to the project's paths.json if they aren't already present and exist.
  * @param {string} projectName - Name of the project.
  * @param {string[]} filePaths - Array of absolute paths to the files.
  * @param {string} baseDir - Base directory for the projects.
@@ -22,15 +22,24 @@ function addFilePaths(projectName, filePaths, baseDir) {
     existingPaths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
   }
 
-  const newPaths = filePaths.filter(
+  // Filter out paths that do not exist
+  const validFilePaths = filePaths.filter((filePath) =>
+    fs.existsSync(filePath)
+  );
+  const newPaths = validFilePaths.filter(
     (filePath) => !existingPaths.includes(filePath)
   );
   const updatedPaths = [...existingPaths, ...newPaths];
   fs.writeFileSync(pathsFilePath, JSON.stringify(updatedPaths, null, 2));
 
-  return newPaths.length !== filePaths.length
-    ? "Some or all files already exist in the project."
-    : "All files added successfully.";
+  return {
+    message:
+      newPaths.length !== validFilePaths.length
+        ? "Some or all files already exist in the project or do not exist."
+        : "All files added successfully.",
+    validFilePaths,
+    invalidFilePaths: filePaths.filter((filePath) => !fs.existsSync(filePath)),
+  };
 }
 
 /**

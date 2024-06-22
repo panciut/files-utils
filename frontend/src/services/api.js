@@ -78,6 +78,8 @@ export const addFilePaths = async (projectName, filePaths) => {
     if (!response.ok) {
       throw new Error("Failed to add file paths");
     }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error adding file paths:", error);
     throw error;
