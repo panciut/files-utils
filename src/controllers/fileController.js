@@ -27,10 +27,11 @@ const addFilePathsController = (req, res) => {
   }
 
   try {
-    addFilePaths(projectName, filePaths, baseDir);
-    res
-      .status(200)
-      .json({ message: `File paths added to project ${projectName}` });
+    const message = addFilePaths(projectName, filePaths, baseDir);
+    res.status(200).json({
+      message: `File paths added to project ${projectName}`,
+      warning: message,
+    });
   } catch (error) {
     res
       .status(500)
@@ -74,7 +75,15 @@ const createProjectController = (req, res) => {
   const { projectName } = req.body;
 
   try {
-    createProject(projectName, baseDir);
+    const exists = createProject(projectName, baseDir);
+    if (exists) {
+      return res
+        .status(200)
+        .json({
+          message: `Project ${projectName} already exists`,
+          warning: true,
+        });
+    }
     res
       .status(200)
       .json({ message: `Project ${projectName} created successfully` });

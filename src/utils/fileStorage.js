@@ -27,6 +27,29 @@ function addFilePaths(projectName, filePaths, baseDir) {
   );
   const updatedPaths = [...existingPaths, ...newPaths];
   fs.writeFileSync(pathsFilePath, JSON.stringify(updatedPaths, null, 2));
+
+  return newPaths.length !== filePaths.length
+    ? "Some or all files already exist in the project."
+    : "All files added successfully.";
+}
+
+/**
+ * Creates a new project directory with an empty paths.json file.
+ * @param {string} projectName - Name of the project.
+ * @param {string} baseDir - Base directory for the projects.
+ * @returns {boolean} - Returns true if the project already exists, false otherwise.
+ */
+function createProject(projectName, baseDir) {
+  const projectDir = path.join(baseDir, projectName);
+
+  if (fs.existsSync(projectDir)) {
+    return true;
+  }
+
+  fs.mkdirSync(projectDir, { recursive: true });
+  const pathsFilePath = path.join(projectDir, "paths.json");
+  fs.writeFileSync(pathsFilePath, JSON.stringify([], null, 2));
+  return false;
 }
 
 /**
@@ -44,25 +67,6 @@ function removeFilePaths(projectName, filePaths, baseDir) {
     paths = paths.filter((p) => !filePaths.includes(p));
     fs.writeFileSync(pathsFilePath, JSON.stringify(paths, null, 2));
   }
-}
-
-/**
- * Creates a new project directory with an empty paths.json file.
- * @param {string} projectName - Name of the project.
- * @param {string} baseDir - Base directory for the projects.
- */
-function createProject(projectName, baseDir) {
-  if (!projectName) {
-    throw new Error("Project name is required");
-  }
-  const projectDir = path.join(baseDir, projectName);
-
-  if (!fs.existsSync(projectDir)) {
-    fs.mkdirSync(projectDir, { recursive: true });
-  }
-
-  const pathsFilePath = path.join(projectDir, "paths.json");
-  fs.writeFileSync(pathsFilePath, JSON.stringify([], null, 2));
 }
 
 /**
