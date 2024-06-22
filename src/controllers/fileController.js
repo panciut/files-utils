@@ -1,5 +1,3 @@
-// src/controllers/fileController.js
-
 const fs = require("fs");
 const path = require("path");
 const {
@@ -205,6 +203,62 @@ const getAllOutputFilesController = (req, res) => {
   }
 };
 
+/**
+ * Controller to get all projects.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+const getAllProjectsController = (req, res) => {
+  try {
+    const projects = fs.readdirSync(baseDir).filter((project) => {
+      const projectPath = path.join(baseDir, project);
+      return fs.statSync(projectPath).isDirectory();
+    });
+    res.status(200).json({
+      message: "All projects",
+      projects,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to get projects", error: error.message });
+  }
+};
+
+/**
+ * Controller to get project details.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+const getProjectDetailsController = (req, res) => {
+  const { projectName } = req.body;
+
+  try {
+    const projectDir = path.join(baseDir, projectName);
+    if (!fs.existsSync(projectDir)) {
+      return res
+        .status(404)
+        .json({ message: `Project ${projectName} not found` });
+    }
+    const filePaths = getFilePaths(projectName, baseDir);
+    const size = filePaths.reduce((total, filePath) => {
+      return total + fs.statSync(filePath).size;
+    }, 0);
+    res.status(200).json({
+      message: `Details for project ${projectName}`,
+      project: {
+        name: projectName,
+        numberOfFiles: filePaths.length,
+        size,
+      },
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to get project details", error: error.message });
+  }
+};
+
 module.exports = {
   addFilePathsController,
   removeFilePathsController,
@@ -214,4 +268,6 @@ module.exports = {
   getAllFilesController,
   getOutputFileController,
   getAllOutputFilesController,
+  getAllProjectsController,
+  getProjectDetailsController,
 };
