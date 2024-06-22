@@ -164,11 +164,9 @@ const getOutputFileController = (req, res) => {
   try {
     const outputFilePath = path.join(baseDir, projectName, outputFileName);
     if (!fs.existsSync(outputFilePath)) {
-      return res
-        .status(404)
-        .json({
-          message: `Output file ${outputFileName} not found for project ${projectName}`,
-        });
+      return res.status(404).json({
+        message: `Output file ${outputFileName} not found for project ${projectName}`,
+      });
     }
     res.sendFile(path.resolve(outputFilePath));
   } catch (error) {

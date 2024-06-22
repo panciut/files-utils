@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 /**
- * Adds file paths to the project's paths.json.
+ * Adds file paths to the project's paths.json if they aren't already present.
  * @param {string} projectName - Name of the project.
  * @param {string[]} filePaths - Array of absolute paths to the files.
  * @param {string} baseDir - Base directory for the projects.
@@ -17,13 +17,16 @@ function addFilePaths(projectName, filePaths, baseDir) {
     fs.mkdirSync(projectDir, { recursive: true });
   }
 
-  let paths = [];
+  let existingPaths = [];
   if (fs.existsSync(pathsFilePath)) {
-    paths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
+    existingPaths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
   }
 
-  paths.push(...filePaths);
-  fs.writeFileSync(pathsFilePath, JSON.stringify(paths, null, 2));
+  const newPaths = filePaths.filter(
+    (filePath) => !existingPaths.includes(filePath)
+  );
+  const updatedPaths = [...existingPaths, ...newPaths];
+  fs.writeFileSync(pathsFilePath, JSON.stringify(updatedPaths, null, 2));
 }
 
 /**
