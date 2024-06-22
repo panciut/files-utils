@@ -24,7 +24,7 @@ export const FormContainer = styled.div`
 `;
 
 export const FormInput = styled.input`
-  width: 100%;
+  width: 80%;
   padding: 10px;
   margin-bottom: 20px;
   border: 1px solid ${theme.colors.darkGrey};
