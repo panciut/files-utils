@@ -1,3 +1,5 @@
+// src/controllers/fileController.js
+
 const fs = require("fs");
 const path = require("path");
 const {
@@ -11,6 +13,11 @@ const mergeFiles = require("../utils/fileMerger");
 
 const baseDir = process.env.PROJECTS_BASE_PATH;
 
+/**
+ * Controller to handle adding file paths to a project.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 const addFilePathsController = (req, res) => {
   const projectName = req.params.projectName;
   const { filePaths } = req.body;
@@ -22,15 +29,14 @@ const addFilePathsController = (req, res) => {
   }
 
   try {
-    const { message, validFilePaths, invalidFilePaths } = addFilePaths(
+    const { message, addedPaths, invalidFilePaths } = addFilePaths(
       projectName,
       filePaths,
       baseDir
     );
     res.status(200).json({
-      message: `File paths added to project ${projectName}`,
-      warning: message,
-      validFilePaths,
+      message,
+      addedPaths,
       invalidFilePaths,
     });
   } catch (error) {

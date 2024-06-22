@@ -22,7 +22,6 @@ function addFilePaths(projectName, filePaths, baseDir) {
     existingPaths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
   }
 
-  // Filter out paths that do not exist
   const validFilePaths = filePaths.filter((filePath) =>
     fs.existsSync(filePath)
   );
@@ -32,13 +31,19 @@ function addFilePaths(projectName, filePaths, baseDir) {
   const updatedPaths = [...existingPaths, ...newPaths];
   fs.writeFileSync(pathsFilePath, JSON.stringify(updatedPaths, null, 2));
 
+  const addedPaths =
+    newPaths.length !== validFilePaths.length
+      ? "Some or all files already exist in the project or do not exist."
+      : "All files added successfully.";
+
+  const invalidFilePaths = filePaths.filter(
+    (filePath) => !fs.existsSync(filePath)
+  );
+
   return {
-    message:
-      newPaths.length !== validFilePaths.length
-        ? "Some or all files already exist in the project or do not exist."
-        : "All files added successfully.",
-    validFilePaths,
-    invalidFilePaths: filePaths.filter((filePath) => !fs.existsSync(filePath)),
+    message: addedPaths,
+    addedPaths: newPaths,
+    invalidFilePaths,
   };
 }
 
