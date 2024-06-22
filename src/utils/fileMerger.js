@@ -8,6 +8,7 @@ const path = require("path");
  * @param {string[]} filePaths - Array of absolute paths to the files to be merged.
  * @param {string} projectName - Name of the project.
  * @param {string} baseDir - Base directory for the projects.
+ * @returns {string} - The output file path.
  */
 function mergeFiles(filePaths, projectName, baseDir) {
   const outputDir = path.join(baseDir, projectName);
