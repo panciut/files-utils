@@ -17,7 +17,8 @@ const baseDir = process.env.PROJECTS_BASE_PATH || "./projects";
  * @param {Object} res - Express response object.
  */
 const addFilePathsController = (req, res) => {
-  const { projectName, filePaths } = req.body;
+  const projectName = req.params.projectName;
+  const { filePaths } = req.body;
 
   if (!Array.isArray(filePaths) || !filePaths.length) {
     return res
@@ -43,7 +44,8 @@ const addFilePathsController = (req, res) => {
  * @param {Object} res - Express response object.
  */
 const removeFilePathsController = (req, res) => {
-  const { projectName, filePaths } = req.body;
+  const projectName = req.params.projectName;
+  const { filePaths } = req.body;
 
   if (!Array.isArray(filePaths) || !filePaths.length) {
     return res
@@ -89,7 +91,7 @@ const createProjectController = (req, res) => {
  * @param {Object} res - Express response object.
  */
 const removeProjectController = (req, res) => {
-  const { projectName } = req.body;
+  const projectName = req.params.projectName;
 
   try {
     removeProject(projectName, baseDir);
@@ -109,7 +111,8 @@ const removeProjectController = (req, res) => {
  * @param {Object} res - Express response object.
  */
 const mergeFilesController = (req, res) => {
-  const { projectName, outputFileName = "output.md" } = req.body;
+  const projectName = req.params.projectName;
+  const { outputFileName = "output.md" } = req.body;
 
   try {
     const filePaths = getFilePaths(projectName, baseDir);
@@ -136,7 +139,7 @@ const mergeFilesController = (req, res) => {
  * @param {Object} res - Express response object.
  */
 const getAllFilesController = (req, res) => {
-  const { projectName } = req.body;
+  const projectName = req.params.projectName;
 
   try {
     const filePaths = getFilePaths(projectName, baseDir);
@@ -157,7 +160,8 @@ const getAllFilesController = (req, res) => {
  * @param {Object} res - Express response object.
  */
 const getOutputFileController = (req, res) => {
-  const { projectName, outputFileName = "output.md" } = req.body;
+  const projectName = req.params.projectName;
+  const outputFileName = req.params.outputFileName;
 
   try {
     const outputFilePath = path.join(baseDir, projectName, outputFileName);
@@ -180,7 +184,7 @@ const getOutputFileController = (req, res) => {
  * @param {Object} res - Express response object.
  */
 const getAllOutputFilesController = (req, res) => {
-  const { projectName } = req.body;
+  const projectName = req.params.projectName;
 
   try {
     const projectDir = path.join(baseDir, projectName);
@@ -231,7 +235,7 @@ const getAllProjectsController = (req, res) => {
  * @param {Object} res - Express response object.
  */
 const getProjectDetailsController = (req, res) => {
-  const { projectName } = req.body;
+  const projectName = req.params.projectName;
 
   try {
     const projectDir = path.join(baseDir, projectName);
