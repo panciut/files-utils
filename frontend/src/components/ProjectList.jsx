@@ -1,4 +1,7 @@
+//frontend/src/components/ProjectList.jsx
+
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchProjects } from '../services/api';
 
 const ProjectList = () => {
@@ -17,7 +20,9 @@ const ProjectList = () => {
             <h2>Projects</h2>
             <ul>
                 {projects.map((project) => (
-                    <li key={project}>{project}</li>
+                    <li key={project}>
+                        <Link to={`/project/${project}`}>{project}</Link>
+                    </li>
                 ))}
             </ul>
         </div>

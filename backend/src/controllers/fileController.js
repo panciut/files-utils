@@ -252,6 +252,7 @@ const getProjectDetailsController = (req, res) => {
         .json({ message: `Project ${projectName} not found` });
     }
     const filePaths = getFilePaths(projectName, baseDir);
+    console.log(filePaths);
     const size = filePaths.reduce((total, filePath) => {
       return total + fs.statSync(filePath).size;
     }, 0);
