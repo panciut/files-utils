@@ -18,7 +18,8 @@ backend/.env
 frontend/.env
 
 # Projects directory
-projects/
+projects/*
+!projects/config.md
 
 # Optional npm cache directory
 .npm

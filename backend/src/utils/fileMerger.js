@@ -17,29 +17,52 @@ function mergeFiles(projectName, baseDir) {
   const pathsFilePath = path.join(projectDir, "paths.json");
   const allFilePaths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
 
-  outputFiles.forEach(({ name, includePaths }) => {
-    const outputDir = path.join(projectDir, outputDirectory);
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
-    const outputFilePath = path.join(outputDir, name);
+  outputFiles.forEach(
+    ({
+      name,
+      includePaths,
+      includeFiles = [],
+      excludeFiles = [],
+      includeFileTypes = [],
+      excludeFileTypes = [],
+      excludeDirectories = [],
+    }) => {
+      const outputDir = path.join(projectDir, outputDirectory);
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
+      const outputFilePath = path.join(outputDir, name);
 
-    const writeStream = fs.createWriteStream(outputFilePath);
+      const writeStream = fs.createWriteStream(outputFilePath);
 
-    allFilePaths.forEach((filePath) => {
-      includePaths.forEach((includePath) => {
-        if (filePath.startsWith(includePath)) {
-          if (fs.statSync(filePath).isFile()) {
-            const fileContent = fs.readFileSync(filePath, "utf-8");
-            const comment = `# ${filePath}\n\n`;
-            writeStream.write(comment + fileContent + "\n\n");
-          }
+      allFilePaths.forEach((filePath) => {
+        const fileDir = path.dirname(filePath);
+        const fileExt = path.extname(filePath);
+
+        const matchesIncludePaths = includePaths.some((includePath) =>
+          filePath.startsWith(includePath)
+        );
+        const matchesIncludeFiles = includeFiles.includes(filePath);
+        const matchesExcludeFiles = excludeFiles.includes(filePath);
+
+        if (
+          fs.statSync(filePath).isFile() &&
+          (matchesIncludePaths || matchesIncludeFiles) &&
+          !matchesExcludeFiles &&
+          (includeFileTypes.length === 0 ||
+            includeFileTypes.includes(fileExt)) &&
+          !excludeFileTypes.includes(fileExt) &&
+          !excludeDirectories.some((dir) => fileDir.includes(dir))
+        ) {
+          const fileContent = fs.readFileSync(filePath, "utf-8");
+          const comment = `# ${filePath}\n\n`;
+          writeStream.write(comment + fileContent + "\n\n");
         }
       });
-    });
 
-    writeStream.end();
-  });
+      writeStream.end();
+    }
+  );
 }
 
 module.exports = mergeFiles;
