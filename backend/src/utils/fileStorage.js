@@ -2,6 +2,56 @@
 
 const fs = require("fs");
 const path = require("path");
+const { loadProjectConfig } = require("./config");
+
+/**
+ * Creates a new project directory with an empty paths.json file and a default config.json.
+ * @param {string} projectName - Name of the project.
+ * @param {string} baseDir - Base directory for the projects.
+ * @returns {boolean} - Returns true if the project already exists, false otherwise.
+ */
+function createProject(projectName, baseDir) {
+  const projectDir = path.join(baseDir, projectName);
+
+  if (fs.existsSync(projectDir)) {
+    return true;
+  }
+
+  fs.mkdirSync(projectDir, { recursive: true });
+  const pathsFilePath = path.join(projectDir, "paths.json");
+  fs.writeFileSync(pathsFilePath, JSON.stringify([], null, 2));
+
+  const configFilePath = path.join(projectDir, "config.json");
+  const defaultConfig = {
+    outputDirectory: "output",
+    includePaths: [],
+    includeFileTypes: [],
+    excludeFileTypes: [],
+    excludeDirectories: [],
+    outputFiles: [],
+    maxClipboardLines: 100,
+  };
+  fs.writeFileSync(configFilePath, JSON.stringify(defaultConfig, null, 2));
+
+  return false;
+}
+
+/**
+ * Retrieves the file paths for a project from paths.json.
+ * @param {string} projectName - Name of the project.
+ * @param {string} baseDir - Base directory for the projects.
+ * @returns {string[]} - Array of file paths.
+ */
+function getFilePaths(projectName, baseDir) {
+  const projectDir = path.join(baseDir, projectName);
+  const pathsFilePath = path.join(projectDir, "paths.json");
+
+  if (fs.existsSync(pathsFilePath)) {
+    return JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
+  }
+
+  return [];
+}
 
 /**
  * Adds file paths to the project's paths.json if they aren't already present and exist.
@@ -48,25 +98,6 @@ function addFilePaths(projectName, filePaths, baseDir) {
 }
 
 /**
- * Creates a new project directory with an empty paths.json file.
- * @param {string} projectName - Name of the project.
- * @param {string} baseDir - Base directory for the projects.
- * @returns {boolean} - Returns true if the project already exists, false otherwise.
- */
-function createProject(projectName, baseDir) {
-  const projectDir = path.join(baseDir, projectName);
-
-  if (fs.existsSync(projectDir)) {
-    return true;
-  }
-
-  fs.mkdirSync(projectDir, { recursive: true });
-  const pathsFilePath = path.join(projectDir, "paths.json");
-  fs.writeFileSync(pathsFilePath, JSON.stringify([], null, 2));
-  return false;
-}
-
-/**
  * Removes file paths from the project's paths.json.
  * @param {string} projectName - Name of the project.
  * @param {string[]} filePaths - Array of absolute paths to be removed.
@@ -94,23 +125,6 @@ function removeProject(projectName, baseDir) {
   if (fs.existsSync(projectDir)) {
     fs.rmSync(projectDir, { recursive: true, force: true });
   }
-}
-
-/**
- * Retrieves the file paths for a project from paths.json.
- * @param {string} projectName - Name of the project.
- * @param {string} baseDir - Base directory for the projects.
- * @returns {string[]} - Array of file paths.
- */
-function getFilePaths(projectName, baseDir) {
-  const projectDir = path.join(baseDir, projectName);
-  const pathsFilePath = path.join(projectDir, "paths.json");
-
-  if (fs.existsSync(pathsFilePath)) {
-    return JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
-  }
-
-  return [];
 }
 
 module.exports = {

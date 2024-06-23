@@ -2,43 +2,44 @@
 
 const fs = require("fs");
 const path = require("path");
+const { loadProjectConfig } = require("./config");
 
 /**
- * Merges multiple files into a single markdown file with comments indicating the original file paths.
- * @param {string[]} filePaths - Array of absolute paths to the files to be merged.
+ * Merges files for a project based on its configuration and paths.json.
  * @param {string} projectName - Name of the project.
  * @param {string} baseDir - Base directory for the projects.
- * @param {string} outputFileName - Name of the output file.
- * @returns {string} - The output file path.
  */
-function mergeFiles(
-  filePaths,
-  projectName,
-  baseDir,
-  outputFileName = "output.md"
-) {
-  const outputDir = path.join(baseDir, projectName);
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-  const outputFilePath = path.join(outputDir, outputFileName);
+function mergeFiles(projectName, baseDir) {
+  const projectDir = path.join(baseDir, projectName);
+  const config = loadProjectConfig(projectDir);
+  const { outputDirectory, outputFiles } = config;
 
-  const writeStream = fs.createWriteStream(outputFilePath);
+  const pathsFilePath = path.join(projectDir, "paths.json");
+  const allFilePaths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
 
-  filePaths.forEach((filePath, index) => {
-    const fileContent = fs.readFileSync(filePath, "utf-8");
-    const comment = `# ${filePath}\n\n`;
-
-    if (index > 0) {
-      writeStream.write("\n\n");
+  outputFiles.forEach(({ name, includePaths }) => {
+    const outputDir = path.join(projectDir, outputDirectory);
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
     }
+    const outputFilePath = path.join(outputDir, name);
 
-    writeStream.write(comment + fileContent);
+    const writeStream = fs.createWriteStream(outputFilePath);
+
+    allFilePaths.forEach((filePath) => {
+      includePaths.forEach((includePath) => {
+        if (filePath.startsWith(includePath)) {
+          if (fs.statSync(filePath).isFile()) {
+            const fileContent = fs.readFileSync(filePath, "utf-8");
+            const comment = `# ${filePath}\n\n`;
+            writeStream.write(comment + fileContent + "\n\n");
+          }
+        }
+      });
+    });
+
+    writeStream.end();
   });
-
-  writeStream.end();
-
-  return outputFilePath;
 }
 
 module.exports = mergeFiles;

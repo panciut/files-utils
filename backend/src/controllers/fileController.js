@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { loadProjectConfig } = require("../utils/config");
 const {
   addFilePaths,
   removeFilePaths,
@@ -21,7 +22,6 @@ const baseDir = process.env.PROJECTS_BASE_PATH;
 const addFilePathsController = (req, res) => {
   const projectName = req.params.projectName;
   const { filePaths } = req.body;
-  console.log(filePaths);
 
   if (!Array.isArray(filePaths) || !filePaths.length) {
     return res
@@ -119,7 +119,6 @@ const removeProjectController = (req, res) => {
       .json({ message: "Failed to remove project", error: error.message });
   }
 };
-
 /**
  * Controller to handle merging of files for a project.
  * @param {Object} req - Express request object.
@@ -127,19 +126,11 @@ const removeProjectController = (req, res) => {
  */
 const mergeFilesController = (req, res) => {
   const projectName = req.params.projectName;
-  const { outputFileName = "output.md" } = req.body;
 
   try {
-    const filePaths = getFilePaths(projectName, baseDir);
-    const outputFilePath = mergeFiles(
-      filePaths,
-      projectName,
-      baseDir,
-      outputFileName
-    );
+    mergeFiles(projectName, baseDir);
     res.status(200).json({
-      message: `Files have been merged into ${outputFilePath}`,
-      outputFilePath,
+      message: `Files have been merged successfully.`,
     });
   } catch (error) {
     res
@@ -179,7 +170,14 @@ const getOutputFileController = (req, res) => {
   const outputFileName = req.params.outputFileName;
 
   try {
-    const outputFilePath = path.join(baseDir, projectName, outputFileName);
+    const projectDir = path.join(baseDir, projectName);
+    const config = loadProjectConfig(projectDir);
+    const outputFilePath = path.join(
+      projectDir,
+      config.outputDirectory,
+      outputFileName
+    );
+
     if (!fs.existsSync(outputFilePath)) {
       return res.status(404).json({
         message: `Output file ${outputFileName} not found for project ${projectName}`,
@@ -193,21 +191,29 @@ const getOutputFileController = (req, res) => {
   }
 };
 
+/**
+ * Controller to get all output files of a project.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 const getAllOutputFilesController = (req, res) => {
   const projectName = req.params.projectName;
 
   try {
     const projectDir = path.join(baseDir, projectName);
-    if (!fs.existsSync(projectDir)) {
-      return res
-        .status(404)
-        .json({ message: `Project ${projectName} not found` });
+    const config = loadProjectConfig(projectDir);
+    const outputDir = path.join(projectDir, config.outputDirectory);
+
+    if (!fs.existsSync(outputDir)) {
+      return res.status(404).json({
+        message: `Output directory not found for project ${projectName}`,
+      });
     }
     const files = fs
-      .readdirSync(projectDir)
+      .readdirSync(outputDir)
       .filter((file) => file.endsWith(".md"))
       .map((file) => {
-        const filePath = path.join(projectDir, file);
+        const filePath = path.join(outputDir, file);
         const content = fs.readFileSync(filePath, "utf-8");
         const lines = content.split("\n").length;
         return { name: file, lines };
