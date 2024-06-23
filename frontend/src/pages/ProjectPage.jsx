@@ -3,14 +3,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProjectDetails, getProjectFiles, mergeFiles, addFilePaths, removeFilePaths } from '../services/api';
+import FilesList from '../components/FilesList';  // Import the new FilesList component
 import {
     ProjectPageContainer,
     ProjectPageHeading,
     CollapsibleSection,
     SectionTitle,
     SectionContent,
-    FileListContainer,
-    FileList,
     ButtonContainer,
     Button,
     InputContainer
@@ -101,13 +100,7 @@ const ProjectPage = () => {
                     Files
                 </SectionTitle>
                 <SectionContent isCollapsed={isFilesCollapsed}>
-                    <FileListContainer>
-                        <FileList>
-                            {projectFiles.map((filePath) => (
-                                <li key={filePath}>{filePath}</li>
-                            ))}
-                        </FileList>
-                    </FileListContainer>
+                    <FilesList files={projectFiles} /> {/* Use FilesList component */}
                 </SectionContent>
             </CollapsibleSection>
             <ButtonContainer>
