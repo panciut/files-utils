@@ -29,7 +29,7 @@ const ProjectPage = () => {
     const [projectFiles, setProjectFiles] = useState([]);
     const [outputFiles, setOutputFiles] = useState([]);
     const [isFilesCollapsed, setIsFilesCollapsed] = useState(true);
-    const [isOutputsCollapsed, setIsOutputsCollapsed] = useState(true);
+    const [isOutputsCollapsed, setIsOutputsCollapsed] = useState(false);
     const [isInfoPopupVisible, setIsInfoPopupVisible] = useState(false);
 
     useEffect(() => {
@@ -52,6 +52,8 @@ const ProjectPage = () => {
         try {
             await mergeFiles(projectName);
             alert('Files merged successfully');
+            const outputs = await getProjectOutputFiles(projectName);
+            setOutputFiles(outputs);
         } catch (error) {
             console.error('Failed to merge files', error);
         }
