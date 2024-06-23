@@ -106,6 +106,7 @@ const ProjectPage = () => {
                     file.name === fileName ? { ...file, content } : file
                 )
             );
+            return content;
         } catch (error) {
             console.error('Failed to fetch file content', error);
         }
@@ -133,11 +134,11 @@ const ProjectPage = () => {
                 </ProjectInfoPopup>
             )}
             <CollapsibleSection>
-                <SectionHeader>
-                    <SectionTitle onClick={() => setIsFilesCollapsed(!isFilesCollapsed)}>
+                <SectionHeader onClick={() => setIsFilesCollapsed(!isFilesCollapsed)}>
+                    <SectionTitle>
                         Files
                     </SectionTitle>
-                    <IconButton onClick={handleFileSelection}>
+                    <IconButton onClick={(e) => { e.stopPropagation(); handleFileSelection(); }}>
                         <img src={addIcon} alt="Add Files" />
                     </IconButton>
                 </SectionHeader>
@@ -146,8 +147,8 @@ const ProjectPage = () => {
                 </SectionContent>
             </CollapsibleSection>
             <CollapsibleSection>
-                <SectionHeader>
-                    <SectionTitle onClick={() => setIsOutputsCollapsed(!isOutputsCollapsed)}>
+                <SectionHeader onClick={() => setIsOutputsCollapsed(!isOutputsCollapsed)}>
+                    <SectionTitle>
                         Output Files
                     </SectionTitle>
                 </SectionHeader>

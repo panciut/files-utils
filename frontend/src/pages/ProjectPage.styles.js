@@ -1,4 +1,5 @@
 // frontend/src/pages/ProjectPage.styles.js
+
 import styled from "styled-components";
 import theme from "../theme";
 
@@ -72,6 +73,7 @@ export const CollapsibleSection = styled.div`
   flex-grow: 1; /* Add this to make the section take available space */
   display: flex;
   flex-direction: column; /* Add this to allow content to expand */
+  cursor: pointer;
 `;
 
 export const SectionHeader = styled.div`
