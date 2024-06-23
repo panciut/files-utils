@@ -1,4 +1,4 @@
-// /frontend/src/pages/ProjectPage.jsx
+// frontend/src/pages/ProjectPage.jsx
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -20,11 +20,11 @@ const ProjectPage = () => {
     const { projectName } = useParams();
     const [projectDetails, setProjectDetails] = useState(null);
     const [projectFiles, setProjectFiles] = useState([]);
-    const [filePaths, setFilePaths] = useState('');
     const [removePaths, setRemovePaths] = useState('');
     const [isDetailsCollapsed, setIsDetailsCollapsed] = useState(false);
     const [isFilesCollapsed, setIsFilesCollapsed] = useState(true);
     const [isAddRemoveCollapsed, setIsAddRemoveCollapsed] = useState(true);
+    const [selectedFiles, setSelectedFiles] = useState([]);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -49,16 +49,21 @@ const ProjectPage = () => {
         }
     };
 
+    const handleFileSelection = async () => {
+        const files = await window.electron.selectFiles();
+        setSelectedFiles(files);
+    };
+
     const handleAddFiles = async () => {
         try {
-            const data = await addFilePaths(projectName, filePaths.split(','));
+            const data = await addFilePaths(projectName, selectedFiles);
             if (data.invalidFilePaths.length > 0) {
                 alert(`The following files do not exist: ${data.invalidFilePaths.join(', ')}`);
             }
             if (data.addedPaths.length > 0) {
                 alert('Files added successfully');
+                setProjectFiles(prevFiles => [...prevFiles, ...data.addedPaths]);
             }
-            setFilePaths('');
         } catch (error) {
             console.error('Failed to add files', error);
         }
@@ -69,6 +74,7 @@ const ProjectPage = () => {
             await removeFilePaths(projectName, removePaths.split(','));
             alert('Files removed successfully');
             setRemovePaths('');
+            setProjectFiles(prevFiles => prevFiles.filter(file => !removePaths.split(',').includes(file)));
         } catch (error) {
             console.error('Failed to remove files', error);
         }
@@ -114,12 +120,16 @@ const ProjectPage = () => {
                 <SectionContent isCollapsed={isAddRemoveCollapsed}>
                     <InputContainer>
                         <h2>Add Files</h2>
-                        <input
-                            type="text"
-                            value={filePaths}
-                            onChange={(e) => setFilePaths(e.target.value)}
-                            placeholder="Comma separated file paths"
-                        />
+                        <ButtonContainer>
+                            <Button onClick={handleFileSelection}>Select Files</Button>
+                        </ButtonContainer>
+                        {selectedFiles.length > 0 && (
+                            <ul>
+                                {selectedFiles.map((filePath, index) => (
+                                    <li key={index}>{filePath}</li>
+                                ))}
+                            </ul>
+                        )}
                         <ButtonContainer>
                             <Button onClick={handleAddFiles}>Add Files</Button>
                         </ButtonContainer>

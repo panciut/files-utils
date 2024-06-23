@@ -21,6 +21,7 @@ const baseDir = process.env.PROJECTS_BASE_PATH;
 const addFilePathsController = (req, res) => {
   const projectName = req.params.projectName;
   const { filePaths } = req.body;
+  console.log(filePaths);
 
   if (!Array.isArray(filePaths) || !filePaths.length) {
     return res

@@ -4,15 +4,20 @@
   "description": "Monorepo for files-utils backend and frontend",
   "private": true,
   "scripts": {
-    "start": "concurrently \"npm run dev:backend\" \"npm run start:frontend\"",
+    "start": "concurrently \"npm run dev:backend\" \"npm run start:frontend\" \"npm run wait-and-electron\"",
     "start:backend": "npm start --prefix backend",
     "dev:backend": "npm run dev --prefix backend",
     "start:frontend": "npm start --prefix frontend",
     "install:backend": "npm install --prefix backend",
-    "install:frontend": "npm install --prefix frontend"
+    "install:frontend": "npm install --prefix frontend",
+    "electron": "npm run electron --prefix frontend",
+    "wait-and-electron": "wait-on http://localhost:3000 && npm run electron --prefix frontend"
   },
   "devDependencies": {
-    "concurrently": "^6.3.0"
+    "concurrently": "^6.3.0",
+    "electron": "^31.0.2",
+    "electron-reload": "^2.0.0-alpha.1",
+    "wait-on": "^6.0.1"
   },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
