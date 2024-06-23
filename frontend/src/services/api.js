@@ -133,3 +133,39 @@ export const removeProject = async (projectName) => {
     throw error;
   }
 };
+
+export const getProjectOutputFiles = async (projectName) => {
+  try {
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const response = await fetch(`${apiUrl}/projects/${projectName}/outputs`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch output files");
+    }
+    const data = await response.json();
+    return data.files.map((file) => ({
+      name: file.name,
+      lines: file.lines,
+      content: null, // Initialize content as null; will fetch later
+    }));
+  } catch (error) {
+    console.error("Error fetching output files:", error);
+    throw error;
+  }
+};
+
+export const getOutputFileContent = async (projectName, fileName) => {
+  try {
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const response = await fetch(
+      `${apiUrl}/projects/${projectName}/output/${fileName}`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch file content");
+    }
+    const content = await response.text();
+    return content;
+  } catch (error) {
+    console.error("Error fetching file content:", error);
+    throw error;
+  }
+};

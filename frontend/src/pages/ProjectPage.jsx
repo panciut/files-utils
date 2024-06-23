@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getProjectDetails, getProjectFiles, mergeFiles, addFilePaths, removeFilePaths } from '../services/api';
+import { getProjectDetails, getProjectFiles, mergeFiles, addFilePaths, removeFilePaths, getProjectOutputFiles, getOutputFileContent } from '../services/api';
 import FilesList from '../components/FilesList';
+import OutputFilesList from '../components/OutputFilesList';
 import addIcon from '../assets/add.svg';
 import infoIcon from '../assets/info.svg';
 import closeIcon from '../assets/close.svg'; // Ensure you have this asset
@@ -26,7 +27,9 @@ const ProjectPage = () => {
     const { projectName } = useParams();
     const [projectDetails, setProjectDetails] = useState(null);
     const [projectFiles, setProjectFiles] = useState([]);
+    const [outputFiles, setOutputFiles] = useState([]);
     const [isFilesCollapsed, setIsFilesCollapsed] = useState(true);
+    const [isOutputsCollapsed, setIsOutputsCollapsed] = useState(true);
     const [isInfoPopupVisible, setIsInfoPopupVisible] = useState(false);
 
     useEffect(() => {
@@ -36,6 +39,8 @@ const ProjectPage = () => {
                 setProjectDetails(details);
                 const files = await getProjectFiles(projectName);
                 setProjectFiles(files.filePaths);
+                const outputs = await getProjectOutputFiles(projectName);
+                setOutputFiles(outputs);
             } catch (error) {
                 console.error('Failed to fetch project details or files', error);
             }
@@ -84,6 +89,28 @@ const ProjectPage = () => {
         }
     };
 
+    const handleCopyContent = (content) => {
+        if (content) {
+            navigator.clipboard.writeText(content);
+            alert('Content copied to clipboard');
+        } else {
+            alert('No content to copy');
+        }
+    };
+
+    const handleFileClick = async (fileName) => {
+        try {
+            const content = await getOutputFileContent(projectName, fileName);
+            setOutputFiles(prevFiles =>
+                prevFiles.map(file =>
+                    file.name === fileName ? { ...file, content } : file
+                )
+            );
+        } catch (error) {
+            console.error('Failed to fetch file content', error);
+        }
+    };
+
     const toggleInfoPopup = () => {
         setIsInfoPopupVisible(!isInfoPopupVisible);
     };
@@ -116,6 +143,16 @@ const ProjectPage = () => {
                 </SectionHeader>
                 <SectionContent isCollapsed={isFilesCollapsed}>
                     <FilesList files={projectFiles} onRemoveFile={handleRemoveFile} />
+                </SectionContent>
+            </CollapsibleSection>
+            <CollapsibleSection>
+                <SectionHeader>
+                    <SectionTitle onClick={() => setIsOutputsCollapsed(!isOutputsCollapsed)}>
+                        Output Files
+                    </SectionTitle>
+                </SectionHeader>
+                <SectionContent isCollapsed={isOutputsCollapsed}>
+                    <OutputFilesList files={outputFiles} onCopyContent={handleCopyContent} onFileClick={handleFileClick} />
                 </SectionContent>
             </CollapsibleSection>
             <ButtonContainer>

@@ -193,11 +193,6 @@ const getOutputFileController = (req, res) => {
   }
 };
 
-/**
- * Controller to get all output files of a project.
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- */
 const getAllOutputFilesController = (req, res) => {
   const projectName = req.params.projectName;
 
@@ -210,7 +205,13 @@ const getAllOutputFilesController = (req, res) => {
     }
     const files = fs
       .readdirSync(projectDir)
-      .filter((file) => file.endsWith(".md"));
+      .filter((file) => file.endsWith(".md"))
+      .map((file) => {
+        const filePath = path.join(projectDir, file);
+        const content = fs.readFileSync(filePath, "utf-8");
+        const lines = content.split("\n").length;
+        return { name: file, lines };
+      });
     res.status(200).json({
       message: `Output files for project ${projectName}`,
       files,
