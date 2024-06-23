@@ -1,16 +1,20 @@
 // frontend/src/components/FilesList.jsx
 
 import React from 'react';
-import { FileListContainer, FileList } from './FilesList.styles';
+import { FileListContainer, FileItemContainer, FileItemText, DeleteButton } from './FilesList.styles';
+import deleteIcon from '../assets/delete.svg'; // Ensure you have this asset
 
-const FilesList = ({ files }) => {
+const FilesList = ({ files, onRemoveFile }) => {
     return (
         <FileListContainer>
-            <FileList>
-                {files.map((filePath) => (
-                    <li key={filePath}>{filePath}</li>
-                ))}
-            </FileList>
+            {files.map((filePath) => (
+                <FileItemContainer key={filePath}>
+                    <FileItemText>{filePath}</FileItemText>
+                    <DeleteButton onClick={() => onRemoveFile(filePath)}>
+                        <img src={deleteIcon} alt="Delete" />
+                    </DeleteButton>
+                </FileItemContainer>
+            ))}
         </FileListContainer>
     );
 };

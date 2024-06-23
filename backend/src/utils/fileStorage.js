@@ -28,7 +28,7 @@ function addFilePaths(projectName, filePaths, baseDir) {
   const newPaths = validFilePaths.filter(
     (filePath) => !existingPaths.includes(filePath)
   );
-  const updatedPaths = [...existingPaths, ...newPaths];
+  const updatedPaths = [...existingPaths, ...newPaths].sort();
   fs.writeFileSync(pathsFilePath, JSON.stringify(updatedPaths, null, 2));
 
   const addedPaths =
@@ -78,7 +78,7 @@ function removeFilePaths(projectName, filePaths, baseDir) {
 
   if (fs.existsSync(pathsFilePath)) {
     let paths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
-    paths = paths.filter((p) => !filePaths.includes(p));
+    paths = paths.filter((p) => !filePaths.includes(p)).sort();
     fs.writeFileSync(pathsFilePath, JSON.stringify(paths, null, 2));
   }
 }

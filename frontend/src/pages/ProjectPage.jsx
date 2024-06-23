@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProjectDetails, getProjectFiles, mergeFiles, addFilePaths, removeFilePaths } from '../services/api';
-import FilesList from '../components/FilesList';  // Import the new FilesList component
+import FilesList from '../components/FilesList';
+import addIcon from '../assets/add.svg';
+import doneIcon from '../assets/done.svg';
 import {
     ProjectPageContainer,
     ProjectPageHeading,
@@ -12,17 +14,17 @@ import {
     SectionContent,
     ButtonContainer,
     Button,
-    InputContainer
+    InputContainer,
+    IconButton,
+    SectionHeader
 } from './ProjectPage.styles';
 
 const ProjectPage = () => {
     const { projectName } = useParams();
     const [projectDetails, setProjectDetails] = useState(null);
     const [projectFiles, setProjectFiles] = useState([]);
-    const [removePaths, setRemovePaths] = useState('');
     const [isDetailsCollapsed, setIsDetailsCollapsed] = useState(false);
     const [isFilesCollapsed, setIsFilesCollapsed] = useState(true);
-    const [isAddRemoveCollapsed, setIsAddRemoveCollapsed] = useState(true);
     const [selectedFiles, setSelectedFiles] = useState([]);
 
     useEffect(() => {
@@ -61,21 +63,21 @@ const ProjectPage = () => {
             }
             if (data.addedPaths.length > 0) {
                 alert('Files added successfully');
-                setProjectFiles(prevFiles => [...prevFiles, ...data.addedPaths]);
+                setProjectFiles(prevFiles => [...prevFiles, ...data.addedPaths].sort());
+                setSelectedFiles([]); // Clear selected files after adding
             }
         } catch (error) {
             console.error('Failed to add files', error);
         }
     };
 
-    const handleRemoveFiles = async () => {
+    const handleRemoveFile = async (filePath) => {
         try {
-            await removeFilePaths(projectName, removePaths.split(','));
-            alert('Files removed successfully');
-            setRemovePaths('');
-            setProjectFiles(prevFiles => prevFiles.filter(file => !removePaths.split(',').includes(file)));
+            await removeFilePaths(projectName, [filePath]);
+            alert('File removed successfully');
+            setProjectFiles(prevFiles => prevFiles.filter(file => file !== filePath));
         } catch (error) {
-            console.error('Failed to remove files', error);
+            console.error('Failed to remove file', error);
         }
     };
 
@@ -96,51 +98,36 @@ const ProjectPage = () => {
                 </SectionContent>
             </CollapsibleSection>
             <CollapsibleSection>
-                <SectionTitle onClick={() => setIsFilesCollapsed(!isFilesCollapsed)}>
-                    Files
-                </SectionTitle>
+                <SectionHeader>
+                    <SectionTitle onClick={() => setIsFilesCollapsed(!isFilesCollapsed)}>
+                        Files
+                    </SectionTitle>
+                    <div>
+                        <IconButton onClick={handleFileSelection}>
+                            <img src={addIcon} alt="Add Files" />
+                        </IconButton>
+                        <IconButton onClick={handleAddFiles}>
+                            <img src={doneIcon} alt="Done Adding Files" />
+                        </IconButton>
+                    </div>
+                </SectionHeader>
                 <SectionContent isCollapsed={isFilesCollapsed}>
-                    <FilesList files={projectFiles} /> {/* Use FilesList component */}
+                    <FilesList files={projectFiles} onRemoveFile={handleRemoveFile} />
                 </SectionContent>
+                {selectedFiles.length > 0 && (
+                    <div>
+                        <h2>Selected Files:</h2>
+                        <ul>
+                            {selectedFiles.map((filePath, index) => (
+                                <li key={index}>{filePath}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </CollapsibleSection>
             <ButtonContainer>
                 <Button onClick={handleMergeFiles}>Merge Files</Button>
             </ButtonContainer>
-            <CollapsibleSection>
-                <SectionTitle onClick={() => setIsAddRemoveCollapsed(!isAddRemoveCollapsed)}>
-                    Add/Remove Files
-                </SectionTitle>
-                <SectionContent isCollapsed={isAddRemoveCollapsed}>
-                    <InputContainer>
-                        <h2>Add Files</h2>
-                        <ButtonContainer>
-                            <Button onClick={handleFileSelection}>Select Files</Button>
-                        </ButtonContainer>
-                        {selectedFiles.length > 0 && (
-                            <ul>
-                                {selectedFiles.map((filePath, index) => (
-                                    <li key={index}>{filePath}</li>
-                                ))}
-                            </ul>
-                        )}
-                        <ButtonContainer>
-                            <Button onClick={handleAddFiles}>Add Files</Button>
-                        </ButtonContainer>
-                    </InputContainer>
-                    <InputContainer>
-                        <h2>Remove Files</h2>
-                        <input
-                            type="text"
-                            value={removePaths}
-                            onChange={(e) => setRemovePaths(e.target.value)}
-                            placeholder="Comma separated file paths"
-                        />
-                        <ButtonContainer>
-                            <Button onClick={handleRemoveFiles}>Remove Files</Button>
-                        </ButtonContainer>
-                    </InputContainer>
-                </SectionContent>
-            </CollapsibleSection>
         </ProjectPageContainer>
     );
 };
