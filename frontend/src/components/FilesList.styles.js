@@ -4,7 +4,7 @@ import styled from "styled-components";
 import theme from "../theme";
 
 export const FileListContainer = styled.div`
-  max-height: 300px;
+  max-height: 450px;
   overflow-y: auto;
   width: 100%;
   padding: 10px;

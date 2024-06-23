@@ -7,14 +7,58 @@ export const ProjectPageContainer = styled.div`
   text-align: center;
   background-color: ${theme.colors.white};
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
-  margin-top: 80px; /* Ensure navbar does not cover content */
+  position: relative; /* Add this for positioning the popup */
 `;
 
 export const ProjectPageHeading = styled.h1`
   font-size: 32px;
   color: ${theme.colors.darkGrey};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+`;
+
+export const ProjectInfoButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+`;
+
+export const ProjectInfoPopup = styled.div`
+  position: absolute;
+  top: 0;
+  left: calc(70%); /* Position next to the button */
+  width: 250px;
+  padding: 15px;
+  background-color: ${theme.colors.white};
+  border: 1px solid ${theme.colors.darkGrey};
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+`;
+
+export const CloseButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 export const CollapsibleSection = styled.div`
@@ -25,6 +69,9 @@ export const CollapsibleSection = styled.div`
   border: 2px solid ${theme.colors.darkGrey};
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  flex-grow: 1; /* Add this to make the section take available space */
+  display: flex;
+  flex-direction: column; /* Add this to allow content to expand */
 `;
 
 export const SectionHeader = styled.div`
@@ -44,33 +91,16 @@ export const SectionTitle = styled.h2`
 export const SectionContent = styled.div`
   margin-top: 10px;
   display: ${(props) => (props.isCollapsed ? "none" : "block")};
-`;
-
-export const FileListContainer = styled.div`
-  max-height: 300px;
-  overflow-y: auto;
-  width: 100%;
-  padding: 10px;
-  background-color: ${theme.colors.white};
-  border: 1px solid ${theme.colors.darkGrey};
-  border-radius: 5px;
-  box-sizing: border-box;
-`;
-
-export const FileList = styled.ul`
-  list-style-type: none;
-  padding: 0;
-
-  li {
-    margin: 10px 0;
-    color: ${theme.colors.darkGrey};
-  }
+  height: 100%; /* Add this to make content take full height */
+  overflow-y: auto; /* Add scroll if content overflows */
 `;
 
 export const ButtonContainer = styled.div`
+  position: fixed;
+  bottom: 20px;
+  width: 100%;
   display: flex;
   justify-content: center;
-  width: 100%;
 `;
 
 export const Button = styled.button`
@@ -85,26 +115,6 @@ export const Button = styled.button`
 
   &:hover {
     background-color: ${theme.colors.darkOrange};
-  }
-`;
-
-export const InputContainer = styled.div`
-  width: 100%;
-  margin: 20px 0;
-  text-align: left;
-  color: ${theme.colors.darkGrey};
-
-  h2 {
-    font-size: 24px;
-    color: ${theme.colors.darkGrey};
-  }
-
-  input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid ${theme.colors.darkGrey};
-    border-radius: 4px;
   }
 `;
 

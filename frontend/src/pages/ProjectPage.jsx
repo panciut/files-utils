@@ -5,7 +5,8 @@ import { useParams } from 'react-router-dom';
 import { getProjectDetails, getProjectFiles, mergeFiles, addFilePaths, removeFilePaths } from '../services/api';
 import FilesList from '../components/FilesList';
 import addIcon from '../assets/add.svg';
-import doneIcon from '../assets/done.svg';
+import infoIcon from '../assets/info.svg';
+import closeIcon from '../assets/close.svg'; // Ensure you have this asset
 import {
     ProjectPageContainer,
     ProjectPageHeading,
@@ -14,18 +15,19 @@ import {
     SectionContent,
     ButtonContainer,
     Button,
-    InputContainer,
     IconButton,
-    SectionHeader
+    SectionHeader,
+    ProjectInfoPopup,
+    ProjectInfoButton,
+    CloseButton
 } from './ProjectPage.styles';
 
 const ProjectPage = () => {
     const { projectName } = useParams();
     const [projectDetails, setProjectDetails] = useState(null);
     const [projectFiles, setProjectFiles] = useState([]);
-    const [isDetailsCollapsed, setIsDetailsCollapsed] = useState(false);
     const [isFilesCollapsed, setIsFilesCollapsed] = useState(true);
-    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [isInfoPopupVisible, setIsInfoPopupVisible] = useState(false);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -52,10 +54,12 @@ const ProjectPage = () => {
 
     const handleFileSelection = async () => {
         const files = await window.electron.selectFiles();
-        setSelectedFiles(files);
+        if (files.length > 0) {
+            handleAddFiles(files);
+        }
     };
 
-    const handleAddFiles = async () => {
+    const handleAddFiles = async (selectedFiles) => {
         try {
             const data = await addFilePaths(projectName, selectedFiles);
             if (data.invalidFilePaths.length > 0) {
@@ -64,7 +68,6 @@ const ProjectPage = () => {
             if (data.addedPaths.length > 0) {
                 alert('Files added successfully');
                 setProjectFiles(prevFiles => [...prevFiles, ...data.addedPaths].sort());
-                setSelectedFiles([]); // Clear selected files after adding
             }
         } catch (error) {
             console.error('Failed to add files', error);
@@ -81,49 +84,39 @@ const ProjectPage = () => {
         }
     };
 
+    const toggleInfoPopup = () => {
+        setIsInfoPopupVisible(!isInfoPopupVisible);
+    };
+
     return (
         <ProjectPageContainer>
-            <ProjectPageHeading>Project: {projectName}</ProjectPageHeading>
-            <CollapsibleSection>
-                <SectionTitle onClick={() => setIsDetailsCollapsed(!isDetailsCollapsed)}>
-                    Project Details
-                </SectionTitle>
-                <SectionContent isCollapsed={isDetailsCollapsed}>
-                    {projectDetails && (
-                        <div>
-                            <p>Number of Files: {projectDetails.project.numberOfFiles}</p>
-                            <p>Total Size: {projectDetails.project.size} bytes</p>
-                        </div>
-                    )}
-                </SectionContent>
-            </CollapsibleSection>
+            <ProjectPageHeading>
+                Project: {projectName}
+                <ProjectInfoButton onClick={toggleInfoPopup}>
+                    <img src={infoIcon} alt="Project Info" />
+                </ProjectInfoButton>
+            </ProjectPageHeading>
+            {isInfoPopupVisible && projectDetails && (
+                <ProjectInfoPopup>
+                    <CloseButton onClick={toggleInfoPopup}>
+                        <img src={closeIcon} alt="Close" />
+                    </CloseButton>
+                    <p>Number of Files: {projectDetails.project.numberOfFiles}</p>
+                    <p>Total Size: {projectDetails.project.size} bytes</p>
+                </ProjectInfoPopup>
+            )}
             <CollapsibleSection>
                 <SectionHeader>
                     <SectionTitle onClick={() => setIsFilesCollapsed(!isFilesCollapsed)}>
                         Files
                     </SectionTitle>
-                    <div>
-                        <IconButton onClick={handleFileSelection}>
-                            <img src={addIcon} alt="Add Files" />
-                        </IconButton>
-                        <IconButton onClick={handleAddFiles}>
-                            <img src={doneIcon} alt="Done Adding Files" />
-                        </IconButton>
-                    </div>
+                    <IconButton onClick={handleFileSelection}>
+                        <img src={addIcon} alt="Add Files" />
+                    </IconButton>
                 </SectionHeader>
                 <SectionContent isCollapsed={isFilesCollapsed}>
                     <FilesList files={projectFiles} onRemoveFile={handleRemoveFile} />
                 </SectionContent>
-                {selectedFiles.length > 0 && (
-                    <div>
-                        <h2>Selected Files:</h2>
-                        <ul>
-                            {selectedFiles.map((filePath, index) => (
-                                <li key={index}>{filePath}</li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
             </CollapsibleSection>
             <ButtonContainer>
                 <Button onClick={handleMergeFiles}>Merge Files</Button>
