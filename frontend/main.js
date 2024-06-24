@@ -23,7 +23,7 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadURL("http://localhost:3000"); // Adjust this URL to your app's URL
+  mainWindow.loadURL("http://localhost:4555"); // Adjust this URL to your app's URL
 
   mainWindow.webContents.on("did-fail-load", () => {
     console.log("Failed to load the content");
@@ -34,7 +34,7 @@ function createWindow() {
 }
 
 app.on("ready", async () => {
-  await waitOn({ resources: ["http://localhost:3000"] });
+  await waitOn({ resources: ["http://localhost:4555"] });
   createWindow();
 });
 
