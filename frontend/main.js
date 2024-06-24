@@ -1,3 +1,5 @@
+// frontend/main.js
+
 const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const path = require("path");
 const waitOn = require("wait-on");
@@ -51,6 +53,13 @@ app.on("activate", () => {
 ipcMain.handle("select-files", async () => {
   const result = await dialog.showOpenDialog({
     properties: ["openFile", "multiSelections"],
+  });
+  return result.filePaths;
+});
+
+ipcMain.handle("select-directories", async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ["openDirectory", "multiSelections"],
   });
   return result.filePaths;
 });

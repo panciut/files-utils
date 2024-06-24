@@ -5,8 +5,10 @@ import { useParams } from 'react-router-dom';
 import { getProjectDetails, getProjectFiles, mergeFiles, addFilePaths, removeFilePaths, getProjectOutputFiles, getOutputFileContent } from '../services/api';
 import FilesList from '../components/FilesList';
 import OutputFilesList from '../components/OutputFilesList';
+import ConfigModal from '../components/ConfigModal'; // Import ConfigModal
 import addIcon from '../assets/add.svg';
 import infoIcon from '../assets/info.svg';
+import settingsIcon from '../assets/settings.svg'; // Ensure you have this asset
 import closeIcon from '../assets/close.svg'; // Ensure you have this asset
 import {
     ProjectPageContainer,
@@ -31,6 +33,7 @@ const ProjectPage = () => {
     const [isFilesCollapsed, setIsFilesCollapsed] = useState(true);
     const [isOutputsCollapsed, setIsOutputsCollapsed] = useState(false);
     const [isInfoPopupVisible, setIsInfoPopupVisible] = useState(false);
+    const [isConfigModalVisible, setIsConfigModalVisible] = useState(false); // State for ConfigModal visibility
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -118,12 +121,19 @@ const ProjectPage = () => {
         setIsInfoPopupVisible(!isInfoPopupVisible);
     };
 
+    const toggleConfigModal = () => {
+        setIsConfigModalVisible(!isConfigModalVisible); // Toggle ConfigModal visibility
+    };
+
     return (
         <ProjectPageContainer>
             <ProjectPageHeading>
                 Project: {projectName}
                 <ProjectInfoButton onClick={toggleInfoPopup}>
                     <img src={infoIcon} alt="Project Info" />
+                </ProjectInfoButton>
+                <ProjectInfoButton onClick={toggleConfigModal}>
+                    <img src={settingsIcon} alt="Settings" />
                 </ProjectInfoButton>
             </ProjectPageHeading>
             {isInfoPopupVisible && projectDetails && (
@@ -134,6 +144,9 @@ const ProjectPage = () => {
                     <p>Number of Files: {projectDetails.project.numberOfFiles}</p>
                     <p>Total Size: {projectDetails.project.size} bytes</p>
                 </ProjectInfoPopup>
+            )}
+            {isConfigModalVisible && (
+                <ConfigModal projectName={projectName} onClose={toggleConfigModal} />
             )}
             <CollapsibleSection>
                 <SectionHeader onClick={() => setIsFilesCollapsed(!isFilesCollapsed)}>

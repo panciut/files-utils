@@ -27,6 +27,22 @@ function mergeFiles(projectName, baseDir) {
       excludeFileTypes = [],
       excludeDirectories = [],
     }) => {
+      // Ensure includePaths is an array
+      if (!Array.isArray(includePaths)) {
+        includePaths = [includePaths];
+      }
+
+      // Convert empty strings to empty arrays
+      if (typeof includeFileTypes === "string" && includeFileTypes === "") {
+        includeFileTypes = [];
+      }
+      if (typeof excludeFileTypes === "string" && excludeFileTypes === "") {
+        excludeFileTypes = [];
+      }
+      if (typeof excludeDirectories === "string" && excludeDirectories === "") {
+        excludeDirectories = [];
+      }
+
       const outputDir = path.join(projectDir, outputDirectory);
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, { recursive: true });

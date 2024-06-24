@@ -35,11 +35,7 @@ const addFilePathsController = (req, res) => {
       filePaths,
       baseDir
     );
-    res.status(200).json({
-      message,
-      addedPaths,
-      invalidFilePaths,
-    });
+    res.status(200).json({ message, addedPaths, invalidFilePaths });
   } catch (error) {
     res
       .status(500)
@@ -130,7 +126,7 @@ const mergeFilesController = (req, res) => {
 
   try {
     mergeFiles(projectName, baseDir);
-    res.status(200).json({ message: `Files have been merged successfully.` });
+    res.status(200).json({ message: "Files have been merged successfully." });
   } catch (error) {
     res
       .status(500)

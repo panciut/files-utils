@@ -169,3 +169,37 @@ export const getOutputFileContent = async (projectName, fileName) => {
     throw error;
   }
 };
+
+export const getProjectConfig = async (projectName) => {
+  try {
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const response = await fetch(`${apiUrl}/${projectName}/config`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch project config");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching project config:", error);
+    throw error;
+  }
+};
+
+export const updateProjectConfig = async (projectName, config) => {
+  try {
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const response = await fetch(`${apiUrl}/${projectName}/config`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(config),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update project config");
+    }
+  } catch (error) {
+    console.error("Error updating project config:", error);
+    throw error;
+  }
+};
