@@ -119,6 +119,7 @@ const removeProjectController = (req, res) => {
       .json({ message: "Failed to remove project", error: error.message });
   }
 };
+
 /**
  * Controller to handle merging of files for a project.
  * @param {Object} req - Express request object.
@@ -129,9 +130,7 @@ const mergeFilesController = (req, res) => {
 
   try {
     mergeFiles(projectName, baseDir);
-    res.status(200).json({
-      message: `Files have been merged successfully.`,
-    });
+    res.status(200).json({ message: `Files have been merged successfully.` });
   } catch (error) {
     res
       .status(500)
@@ -149,10 +148,9 @@ const getAllFilesController = (req, res) => {
 
   try {
     const filePaths = getFilePaths(projectName, baseDir);
-    res.status(200).json({
-      message: `File paths for project ${projectName}`,
-      filePaths,
-    });
+    res
+      .status(200)
+      .json({ message: `File paths for project ${projectName}`, filePaths });
   } catch (error) {
     res
       .status(500)
@@ -218,10 +216,9 @@ const getAllOutputFilesController = (req, res) => {
         const lines = content.split("\n").length;
         return { name: file, lines };
       });
-    res.status(200).json({
-      message: `Output files for project ${projectName}`,
-      files,
-    });
+    res
+      .status(200)
+      .json({ message: `Output files for project ${projectName}`, files });
   } catch (error) {
     res
       .status(500)
@@ -240,10 +237,7 @@ const getAllProjectsController = (req, res) => {
       const projectPath = path.join(baseDir, project);
       return fs.statSync(projectPath).isDirectory();
     });
-    res.status(200).json({
-      message: "All projects",
-      projects,
-    });
+    res.status(200).json({ message: "All projects", projects });
   } catch (error) {
     res
       .status(500)
