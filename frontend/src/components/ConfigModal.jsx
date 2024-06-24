@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getProjectConfig, updateProjectConfig } from '../services/api';
 import closeIcon from '../assets/close.svg';
-import editIcon from '../assets/edit.svg';
 import addIcon from '../assets/add.svg';
-import deleteIcon from '../assets/delete.svg';
 import {
     ModalContainer,
     ModalContent,

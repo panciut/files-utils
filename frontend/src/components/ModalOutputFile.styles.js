@@ -47,16 +47,3 @@ export const ModalInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
 `;
-
-export const ModalButton = styled.button`
-  background: ${({ theme }) => theme.colors.orange};
-  color: ${({ theme }) => theme.colors.black};
-  padding: 10px 20px;
-  border: 2px solid ${({ theme }) => theme.colors.black};
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.darkOrange};
-  }
-`;

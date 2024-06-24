@@ -57,6 +57,11 @@ function mergeFiles(projectName, baseDir) {
       excludeFileTypes = excludeFileTypes.filter(Boolean);
       excludeDirectories = excludeDirectories.filter(Boolean);
 
+      // If includePaths is empty, include all paths
+      if (includePaths.length === 0) {
+        includePaths = allFilePaths;
+      }
+
       const outputFilePath = path.join(outputDir, name);
 
       const writeStream = fs.createWriteStream(outputFilePath);

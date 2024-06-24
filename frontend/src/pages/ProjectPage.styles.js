@@ -98,7 +98,6 @@ export const SectionContent = styled.div`
 `;
 
 export const ButtonContainer = styled.div`
-  position: fixed;
   bottom: 20px;
   width: 100%;
   display: flex;

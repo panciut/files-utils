@@ -24,11 +24,16 @@ function createProject(projectName, baseDir) {
   const configFilePath = path.join(projectDir, "config.json");
   const defaultConfig = {
     outputDirectory: "output",
-    includePaths: [],
-    includeFileTypes: [],
-    excludeFileTypes: [],
-    excludeDirectories: [],
-    outputFiles: [],
+    outputFiles: [
+      {
+        name: "all.output.md",
+        includePaths: [],
+        includeFileTypes: [],
+        excludeFileTypes: [],
+        excludeDirectories: [],
+        outputFiles: [],
+      },
+    ],
     maxClipboardLines: 100,
   };
   fs.writeFileSync(configFilePath, JSON.stringify(defaultConfig, null, 2));
