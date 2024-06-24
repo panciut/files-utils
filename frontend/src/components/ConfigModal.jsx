@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { getProjectConfig, updateProjectConfig } from '../services/api';
+import closeIcon from '../assets/close.svg';
+import editIcon from '../assets/edit.svg';
+import addIcon from '../assets/add.svg';
+import deleteIcon from '../assets/delete.svg';
 import {
     ModalContainer,
     ModalContent,
@@ -17,9 +21,7 @@ import {
     ModalIconButton,
     ModalSectionContent
 } from './ConfigModal.styles';
-import closeIcon from '../assets/close.svg';
-import editIcon from '../assets/edit.svg';
-import addIcon from '../assets/add.svg';
+import ModalOutputFile from './ModalOutputFile';
 
 const ConfigModal = ({ projectName, onClose }) => {
     const [config, setConfig] = useState({
@@ -99,6 +101,13 @@ const ConfigModal = ({ projectName, onClose }) => {
 
     const handleEditOutputFile = (index) => {
         setIsEditing(isEditing === index ? null : index);
+    };
+
+    const handleDeleteOutputFile = (index) => {
+        setConfig((prevConfig) => ({
+            ...prevConfig,
+            outputFiles: prevConfig.outputFiles.filter((_, i) => i !== index)
+        }));
     };
 
     const handleSaveConfig = async () => {
@@ -191,76 +200,16 @@ const ConfigModal = ({ projectName, onClose }) => {
                         </ModalSection>
                     )}
                     {config.outputFiles.map((file, index) => (
-                        <ModalSection key={index}>
-                            <ModalSectionHeader onClick={() => handleEditOutputFile(index)}>
-                                <ModalSectionTitle>{file.name}</ModalSectionTitle>
-                                <ModalIconButton>
-                                    <img src={editIcon} alt="Edit" />
-                                </ModalIconButton>
-                            </ModalSectionHeader>
-                            <ModalSectionContent isCollapsed={isEditing !== index}>
-                                <ModalLabel>Include Paths</ModalLabel>
-                                <ModalInput
-                                    type="text"
-                                    value={Array.isArray(file.includePaths) ? file.includePaths.join(', ') : file.includePaths}
-                                    onChange={(e) => {
-                                        const updatedFiles = [...config.outputFiles];
-                                        updatedFiles[index].includePaths = e.target.value;
-                                        setConfig((prevConfig) => ({
-                                            ...prevConfig,
-                                            outputFiles: updatedFiles
-                                        }));
-                                    }}
-                                    placeholder="Include Paths"
-                                    disabled={isEditing !== index}
-                                />
-                                <ModalLabel>Include File Types (e.g., .js, .json)</ModalLabel>
-                                <ModalInput
-                                    type="text"
-                                    value={Array.isArray(file.includeFileTypes) ? file.includeFileTypes.join(', ') : file.includeFileTypes || ''}
-                                    onChange={(e) => {
-                                        const updatedFiles = [...config.outputFiles];
-                                        updatedFiles[index].includeFileTypes = e.target.value;
-                                        setConfig((prevConfig) => ({
-                                            ...prevConfig,
-                                            outputFiles: updatedFiles
-                                        }));
-                                    }}
-                                    placeholder="Include File Types"
-                                    disabled={isEditing !== index}
-                                />
-                                <ModalLabel>Exclude File Types (e.g., .md)</ModalLabel>
-                                <ModalInput
-                                    type="text"
-                                    value={Array.isArray(file.excludeFileTypes) ? file.excludeFileTypes.join(', ') : file.excludeFileTypes || ''}
-                                    onChange={(e) => {
-                                        const updatedFiles = [...config.outputFiles];
-                                        updatedFiles[index].excludeFileTypes = e.target.value;
-                                        setConfig((prevConfig) => ({
-                                            ...prevConfig,
-                                            outputFiles: updatedFiles
-                                        }));
-                                    }}
-                                    placeholder="Exclude File Types"
-                                    disabled={isEditing !== index}
-                                />
-                                <ModalLabel>Exclude Directories</ModalLabel>
-                                <ModalInput
-                                    type="text"
-                                    value={Array.isArray(file.excludeDirectories) ? file.excludeDirectories.join(', ') : file.excludeDirectories || ''}
-                                    onChange={(e) => {
-                                        const updatedFiles = [...config.outputFiles];
-                                        updatedFiles[index].excludeDirectories = e.target.value;
-                                        setConfig((prevConfig) => ({
-                                            ...prevConfig,
-                                            outputFiles: updatedFiles
-                                        }));
-                                    }}
-                                    placeholder="Exclude Directories"
-                                    disabled={isEditing !== index}
-                                />
-                            </ModalSectionContent>
-                        </ModalSection>
+                        <ModalOutputFile
+                            key={index}
+                            file={file}
+                            index={index}
+                            isEditing={isEditing}
+                            handleEditOutputFile={handleEditOutputFile}
+                            handleDeleteOutputFile={handleDeleteOutputFile}
+                            setConfig={setConfig}
+                            config={config}
+                        />
                     ))}
                     <ModalLabel>Max Clipboard Lines</ModalLabel>
                     <ModalInput

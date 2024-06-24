@@ -17,6 +17,17 @@ function mergeFiles(projectName, baseDir) {
   const pathsFilePath = path.join(projectDir, "paths.json");
   const allFilePaths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
 
+  const outputDir = path.join(projectDir, outputDirectory);
+
+  // Ensure the output directory exists and is empty
+  if (fs.existsSync(outputDir)) {
+    fs.readdirSync(outputDir).forEach((file) => {
+      fs.unlinkSync(path.join(outputDir, file));
+    });
+  } else {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+
   outputFiles.forEach(
     ({
       name,
@@ -27,26 +38,25 @@ function mergeFiles(projectName, baseDir) {
       excludeFileTypes = [],
       excludeDirectories = [],
     }) => {
-      // Ensure includePaths is an array
-      if (!Array.isArray(includePaths)) {
-        includePaths = [includePaths];
-      }
+      // Ensure all path-related and type-related fields are arrays
+      includePaths = Array.isArray(includePaths)
+        ? includePaths
+        : [includePaths];
+      includeFileTypes = Array.isArray(includeFileTypes)
+        ? includeFileTypes
+        : [includeFileTypes];
+      excludeFileTypes = Array.isArray(excludeFileTypes)
+        ? excludeFileTypes
+        : [excludeFileTypes];
+      excludeDirectories = Array.isArray(excludeDirectories)
+        ? excludeDirectories
+        : [excludeDirectories];
 
-      // Convert empty strings to empty arrays
-      if (typeof includeFileTypes === "string" && includeFileTypes === "") {
-        includeFileTypes = [];
-      }
-      if (typeof excludeFileTypes === "string" && excludeFileTypes === "") {
-        excludeFileTypes = [];
-      }
-      if (typeof excludeDirectories === "string" && excludeDirectories === "") {
-        excludeDirectories = [];
-      }
+      // Filter out empty strings from arrays
+      includeFileTypes = includeFileTypes.filter(Boolean);
+      excludeFileTypes = excludeFileTypes.filter(Boolean);
+      excludeDirectories = excludeDirectories.filter(Boolean);
 
-      const outputDir = path.join(projectDir, outputDirectory);
-      if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
-      }
       const outputFilePath = path.join(outputDir, name);
 
       const writeStream = fs.createWriteStream(outputFilePath);
