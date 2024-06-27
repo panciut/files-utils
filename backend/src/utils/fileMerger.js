@@ -63,26 +63,29 @@ function mergeFiles(projectName, baseDir) {
       }
 
       const outputFilePath = path.join(outputDir, name);
-
       const writeStream = fs.createWriteStream(outputFilePath);
 
       allFilePaths.forEach((filePath) => {
         const fileDir = path.dirname(filePath);
         const fileExt = path.extname(filePath);
-
         const matchesIncludePaths = includePaths.some((includePath) =>
           filePath.startsWith(includePath)
         );
         const matchesIncludeFiles = includeFiles.includes(filePath);
         const matchesExcludeFiles = excludeFiles.includes(filePath);
+        const matchesIncludeFileTypes =
+          includeFileTypes.length === 0 ||
+          includeFileTypes.some((type) => filePath.endsWith(type));
+        const matchesExcludeFileTypes = excludeFileTypes.some((type) =>
+          filePath.endsWith(type)
+        );
 
         if (
           fs.statSync(filePath).isFile() &&
           (matchesIncludePaths || matchesIncludeFiles) &&
           !matchesExcludeFiles &&
-          (includeFileTypes.length === 0 ||
-            includeFileTypes.includes(fileExt)) &&
-          !excludeFileTypes.includes(fileExt) &&
+          matchesIncludeFileTypes &&
+          !matchesExcludeFileTypes &&
           !excludeDirectories.some((dir) => fileDir.includes(dir))
         ) {
           const fileContent = fs.readFileSync(filePath, "utf-8");
