@@ -42,17 +42,20 @@ function createProject(projectName, baseDir) {
 }
 
 /**
- * Retrieves the file paths for a project from paths.json.
+ * Retrieves the file paths for a project from paths.json, ensuring they exist.
  * @param {string} projectName - Name of the project.
  * @param {string} baseDir - Base directory for the projects.
- * @returns {string[]} - Array of file paths.
+ * @returns {string[]} - Array of existing file paths.
  */
 function getFilePaths(projectName, baseDir) {
   const projectDir = path.join(baseDir, projectName);
   const pathsFilePath = path.join(projectDir, "paths.json");
 
   if (fs.existsSync(pathsFilePath)) {
-    return JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
+    let paths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
+    paths = paths.filter((filePath) => fs.existsSync(filePath));
+    fs.writeFileSync(pathsFilePath, JSON.stringify(paths, null, 2));
+    return paths;
   }
 
   return [];

@@ -1,4 +1,5 @@
 // frontend/src/components/ConfigModal.styles.js
+
 import styled from "styled-components";
 
 export const ModalContainer = styled.div`
@@ -105,4 +106,31 @@ export const ModalIconButton = styled.button`
 export const ModalSectionContent = styled.div`
   padding: 15px;
   display: ${(props) => (props.isCollapsed ? "none" : "block")};
+`;
+
+export const PathList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+`;
+
+export const PathItem = styled.li`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f1f1f1;
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+`;
+
+export const RemovePathButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
 `;

@@ -1,7 +1,10 @@
+// frontend/src/components/ConfigModal.jsx
+
 import React, { useState, useEffect } from 'react';
 import { getProjectConfig, updateProjectConfig } from '../services/api';
 import closeIcon from '../assets/close.svg';
 import addIcon from '../assets/add.svg';
+import deleteIcon from '../assets/delete.svg'; // Import delete icon
 import {
     ModalContainer,
     ModalContent,
@@ -17,7 +20,10 @@ import {
     ModalSectionHeader,
     ModalSectionTitle,
     ModalIconButton,
-    ModalSectionContent
+    ModalSectionContent,
+    PathList,
+    PathItem,
+    RemovePathButton
 } from './ConfigModal.styles';
 import ModalOutputFile from './ModalOutputFile';
 
@@ -29,7 +35,7 @@ const ConfigModal = ({ projectName, onClose }) => {
     });
     const [newOutputFile, setNewOutputFile] = useState({
         name: '',
-        includePaths: '',
+        includePaths: [],
         includeFileTypes: '',
         excludeFileTypes: '',
         excludeDirectories: ''
@@ -71,9 +77,16 @@ const ConfigModal = ({ projectName, onClose }) => {
             const formattedDirectories = directories.map(dir => dir.endsWith('/') ? dir : `${dir}/`);
             setNewOutputFile((prevOutputFile) => ({
                 ...prevOutputFile,
-                includePaths: formattedDirectories.join(', ')
+                includePaths: [...prevOutputFile.includePaths, ...formattedDirectories]
             }));
         }
+    };
+
+    const handleRemovePath = (index) => {
+        setNewOutputFile((prevOutputFile) => ({
+            ...prevOutputFile,
+            includePaths: prevOutputFile.includePaths.filter((_, i) => i !== index)
+        }));
     };
 
     const handleAddOutputFile = () => {
@@ -81,7 +94,6 @@ const ConfigModal = ({ projectName, onClose }) => {
             ...prevConfig,
             outputFiles: [...prevConfig.outputFiles, {
                 ...newOutputFile,
-                includePaths: newOutputFile.includePaths.split(',').map(path => path.trim()),
                 includeFileTypes: newOutputFile.includeFileTypes.split(',').map(type => type.trim()),
                 excludeFileTypes: newOutputFile.excludeFileTypes.split(',').map(type => type.trim()),
                 excludeDirectories: newOutputFile.excludeDirectories.split(',').map(dir => dir.trim())
@@ -89,7 +101,7 @@ const ConfigModal = ({ projectName, onClose }) => {
         }));
         setNewOutputFile({
             name: '',
-            includePaths: '',
+            includePaths: [],
             includeFileTypes: '',
             excludeFileTypes: '',
             excludeDirectories: ''
@@ -111,7 +123,6 @@ const ConfigModal = ({ projectName, onClose }) => {
     const handleSaveConfig = async () => {
         try {
             await updateProjectConfig(projectName, config);
-
             alert('Configuration saved successfully');
             onClose();
         } catch (error) {
@@ -137,12 +148,12 @@ const ConfigModal = ({ projectName, onClose }) => {
                         onChange={handleInputChange}
                         placeholder="Output Directory"
                     />
-                    <ModalLabel>
-                        Output Files
-                        <ModalIconButton onClick={() => setIsAdding(!isAdding)}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                        <ModalLabel style={{ marginRight: 'auto' }}>Output Files</ModalLabel>
+                        <ModalIconButton onClick={() => setIsAdding(!isAdding)} style={{ marginBottom: '10px' }}>
                             <img src={addIcon} alt="Add" />
                         </ModalIconButton>
-                    </ModalLabel>
+                    </div>
                     {isAdding && (
                         <ModalSection>
                             <ModalSectionHeader>
@@ -160,12 +171,21 @@ const ConfigModal = ({ projectName, onClose }) => {
                                     placeholder="File Name"
                                 />
                                 <ModalLabel>Include Paths</ModalLabel>
+                                <PathList>
+                                    {newOutputFile.includePaths.map((path, index) => (
+                                        <PathItem key={index}>
+                                            {path}
+                                            <RemovePathButton onClick={() => handleRemovePath(index)}>
+                                                <img src={deleteIcon} alt="Remove" />
+                                            </RemovePathButton>
+                                        </PathItem>
+                                    ))}
+                                </PathList>
                                 <ModalInput
                                     type="text"
                                     name="includePaths"
-                                    value={newOutputFile.includePaths}
-                                    onChange={handleNewOutputFileChange}
-                                    placeholder="Include Paths"
+                                    value={newOutputFile.includePaths.join(', ')}
+                                    placeholder="Select Paths"
                                     readOnly
                                     onClick={handleFileSelector}
                                 />
