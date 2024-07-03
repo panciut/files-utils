@@ -1,4 +1,5 @@
 // frontend/src/components/ProjectList.styles.js
+
 import styled from "styled-components";
 import { Link } from "react-router-dom"; // Import Link
 import theme from "../theme";
@@ -16,6 +17,8 @@ export const ProjectListContainer = styled.div`
 export const ProjectListHeading = styled.h2`
   font-size: 24px;
   color: ${theme.colors.darkGrey};
+  display: flex;
+  align-items: center;
 `;
 
 export const ProjectItemContainer = styled.div`
@@ -88,5 +91,17 @@ export const DeleteButton = styled.button`
 
   &:hover {
     background-color: ${theme.colors.darkOrange};
+  }
+`;
+
+export const AddButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+
+  img {
+    width: 24px;
+    height: 24px;
   }
 `;

@@ -11,9 +11,3 @@ export const ProjectListPageContainer = styled.div`
   align-items: center;
   margin-top: 80px; /* Ensure navbar does not cover content */
 `;
-
-export const ProjectListPageHeading = styled.h2`
-  font-size: 24px;
-  color: ${theme.colors.darkGrey};
-  margin-bottom: 20px;
-`;

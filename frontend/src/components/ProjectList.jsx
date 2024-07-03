@@ -1,24 +1,29 @@
 // frontend/src/components/ProjectList.jsx
 
 import React, { useEffect, useState } from 'react';
-import { fetchProjects, removeProject } from '../services/api';
+import { fetchProjects, createProject, removeProject } from '../services/api';
+import CreateProjectModal from './CreateProjectModal';
 import {
     ProjectListContainer,
     ProjectListHeading,
     ProjectItemContainer,
     ProjectItemLink,
     ProjectItemText,
-    DeleteButton
+    DeleteButton,
+    AddButton
 } from './ProjectList.styles';
+import addIcon from '../assets/add.svg';
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const loadProjects = async () => {
+        const data = await fetchProjects();
+        setProjects(data.projects);
+    };
 
     useEffect(() => {
-        const loadProjects = async () => {
-            const data = await fetchProjects();
-            setProjects(data.projects);
-        };
         loadProjects();
     }, []);
 
@@ -35,9 +40,24 @@ const ProjectList = () => {
         }
     };
 
+    const handleCreateProject = async (projectName) => {
+        try {
+            await createProject(projectName);
+            loadProjects(); // Refresh the project list
+            setIsModalOpen(false); // Close the modal
+        } catch (error) {
+            console.error('Failed to create project', error);
+        }
+    };
+
     return (
         <ProjectListContainer>
-            <ProjectListHeading>Projects</ProjectListHeading>
+            <ProjectListHeading>
+                Projects
+                <AddButton onClick={() => setIsModalOpen(true)}>
+                    <img src={addIcon} alt="Add" />
+                </AddButton>
+            </ProjectListHeading>
             {projects.map((project) => (
                 <ProjectItemContainer key={project}>
                     <ProjectItemLink to={`/project/${project}`}>
@@ -46,6 +66,9 @@ const ProjectList = () => {
                     <DeleteButton onClick={(event) => handleDelete(project, event)}>Delete</DeleteButton>
                 </ProjectItemContainer>
             ))}
+            {isModalOpen && (
+                <CreateProjectModal onClose={() => setIsModalOpen(false)} onCreate={handleCreateProject} />
+            )}
         </ProjectListContainer>
     );
 };

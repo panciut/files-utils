@@ -18,14 +18,6 @@ const HomePage = () => {
             <Nav>
                 <NavList>
                     <li>
-                        <Section to="/create-project">
-                            <SectionTitle>
-                                Create Project
-                            </SectionTitle>
-                            <SectionContent>Create a new project.</SectionContent>
-                        </Section>
-                    </li>
-                    <li>
                         <Section to="/projects">
                             <SectionTitle>
                                 Select Project

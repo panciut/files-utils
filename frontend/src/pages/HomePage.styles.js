@@ -1,5 +1,3 @@
-// frontend/src/pages/HomePage.styles.js
-
 import styled from "styled-components";
 import { Link } from "react-router-dom"; // Import Link
 import theme from "../theme";
@@ -36,8 +34,8 @@ export const NavList = styled.ul`
   justify-content: center;
 
   li {
-    flex: 1 1 calc(50% - 40px); /* Calculate the width to fit two items per line with gap */
-    max-width: 40%; /* Ensure the maximum width is 40% */
+    flex: 1 1 calc(80% - 40px); /* Calculate the width to fit one item per line with gap */
+    max-width: 80%; /* Ensure the maximum width is 80% */
     margin: 10px 20px;
   }
 `;
