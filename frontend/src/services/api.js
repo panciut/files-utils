@@ -210,7 +210,7 @@ export const getTreeFiles = async (projectName) => {
       throw new Error("Failed to fetch tree files");
     }
     const data = await response.json();
-    return data;
+    return data.treeFiles; // Extract the treeFiles array from the response
   } catch (error) {
     console.error("Error fetching tree files:", error);
     throw error;

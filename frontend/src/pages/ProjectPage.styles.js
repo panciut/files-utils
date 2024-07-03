@@ -131,3 +131,36 @@ export const IconButton = styled.button`
     height: 24px;
   }
 `;
+
+export const TreeFileList = styled.ul`
+  max-height: 450px;
+  overflow-y: auto;
+  width: 100%;
+  padding: 10px;
+  background-color: ${theme.colors.white};
+  border: 1px solid ${theme.colors.darkGrey};
+  border-radius: 5px;
+  box-sizing: border-box;
+`;
+
+export const TreeFileItem = styled.li`
+  padding: 10px;
+  margin: 10px 0;
+  background-color: ${theme.colors.lightGrey};
+  border: 1px solid ${theme.colors.darkGrey};
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${theme.colors.grey};
+  }
+`;
+
+export const TreeFileContent = styled.pre`
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+`;

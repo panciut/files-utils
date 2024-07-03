@@ -9,9 +9,9 @@ const {
 const router = express.Router();
 
 // Route to get all tree files for a project
-router.get("/:projectName/trees", getTreeFilesController);
+router.get("/:projectName", getTreeFilesController);
 
 // Route to get the content of a specific tree file
-router.get("/:projectName/tree/:treeFileName", getTreeFileContentController);
+router.get("/:projectName/:treeFileName", getTreeFileContentController);
 
 module.exports = router;

@@ -9,10 +9,13 @@ import {
     addFilePaths,
     removeFilePaths,
     getProjectOutputFiles,
-    getOutputFileContent
+    getOutputFileContent,
+    getTreeFiles,
+    getTreeFileContent
 } from '../services/api';
 import FilesList from '../components/FilesList';
 import OutputFilesList from '../components/OutputFilesList';
+import TreeFilesList from '../components/TreeFilesList'; // Import TreeFilesList
 import ConfigModal from '../components/ConfigModal'; // Import ConfigModal
 import addIcon from '../assets/add.svg';
 import infoIcon from '../assets/info.svg';
@@ -38,8 +41,10 @@ const ProjectPage = () => {
     const [projectDetails, setProjectDetails] = useState(null);
     const [projectFiles, setProjectFiles] = useState([]);
     const [outputFiles, setOutputFiles] = useState([]);
+    const [treeFiles, setTreeFiles] = useState([]); // State for tree files
     const [isFilesCollapsed, setIsFilesCollapsed] = useState(true);
     const [isOutputsCollapsed, setIsOutputsCollapsed] = useState(false);
+    const [isTreesCollapsed, setIsTreesCollapsed] = useState(true); // State for tree section collapse
     const [isInfoPopupVisible, setIsInfoPopupVisible] = useState(false);
     const [isConfigModalVisible, setIsConfigModalVisible] = useState(false); // State for ConfigModal visibility
 
@@ -52,6 +57,8 @@ const ProjectPage = () => {
                 setProjectFiles(files.filePaths);
                 const outputs = await getProjectOutputFiles(projectName);
                 setOutputFiles(outputs);
+                const trees = await getTreeFiles(projectName); // Fetch tree files
+                setTreeFiles(trees);
             } catch (error) {
                 console.error('Failed to fetch project details or files', error);
             }
@@ -65,6 +72,8 @@ const ProjectPage = () => {
             alert('Files merged successfully');
             const outputs = await getProjectOutputFiles(projectName);
             setOutputFiles(outputs); // Update output files state after merging
+            const trees = await getTreeFiles(projectName); // Refresh tree files
+            setTreeFiles(trees);
         } catch (error) {
             console.error('Failed to merge files', error);
         }
@@ -125,6 +134,15 @@ const ProjectPage = () => {
         }
     };
 
+    const handleTreeFileClick = async (fileName) => {
+        try {
+            const content = await getTreeFileContent(projectName, fileName);
+            return content;
+        } catch (error) {
+            console.error('Failed to fetch tree file content', error);
+        }
+    };
+
     const toggleInfoPopup = () => {
         setIsInfoPopupVisible(!isInfoPopupVisible);
     };
@@ -177,6 +195,16 @@ const ProjectPage = () => {
                 </SectionHeader>
                 <SectionContent isCollapsed={isOutputsCollapsed}>
                     <OutputFilesList files={outputFiles} onCopyContent={handleCopyContent} onFileClick={handleFileClick} />
+                </SectionContent>
+            </CollapsibleSection>
+            <CollapsibleSection>
+                <SectionHeader onClick={() => setIsTreesCollapsed(!isTreesCollapsed)}>
+                    <SectionTitle>
+                        Tree Files
+                    </SectionTitle>
+                </SectionHeader>
+                <SectionContent isCollapsed={isTreesCollapsed}>
+                    <TreeFilesList files={treeFiles} onCopyContent={handleCopyContent} onFileClick={handleTreeFileClick} />
                 </SectionContent>
             </CollapsibleSection>
             <ButtonContainer>
