@@ -6,6 +6,37 @@ const { loadProjectConfig } = require("./config");
 const { countTokens } = require("./tokenizer");
 
 /**
+ * Adds a file path to the directory tree structure.
+ * @param {Object} tree - The directory tree structure.
+ * @param {string} filePath - The file path to add.
+ */
+function addToTree(tree, filePath) {
+  const parts = filePath.split(path.sep);
+  let current = tree;
+  for (const part of parts) {
+    if (!current[part]) {
+      current[part] = {};
+    }
+    current = current[part];
+  }
+}
+
+/**
+ * Converts a directory tree structure to a formatted string.
+ * @param {Object} tree - The directory tree structure.
+ * @param {string} indent - The indentation string.
+ * @returns {string} - The formatted directory tree.
+ */
+function treeToString(tree, indent = "") {
+  let result = "";
+  for (const key in tree) {
+    result += `${indent}${key}\n`;
+    result += treeToString(tree[key], indent + "  ");
+  }
+  return result;
+}
+
+/**
  * Merges files for a project based on its configuration and paths.json.
  * @param {string} projectName - Name of the project.
  * @param {string} baseDir - Base directory for the projects.
@@ -19,14 +50,19 @@ function mergeFiles(projectName, baseDir) {
   const allFilePaths = JSON.parse(fs.readFileSync(pathsFilePath, "utf-8"));
 
   const outputDir = path.join(projectDir, outputDirectory);
+  const treesDir = path.join(projectDir, "trees");
 
-  // Ensure the output directory exists and is empty
+  // Ensure the output and trees directories exist and are empty
   if (fs.existsSync(outputDir)) {
     fs.readdirSync(outputDir).forEach((file) => {
       fs.unlinkSync(path.join(outputDir, file));
     });
   } else {
     fs.mkdirSync(outputDir, { recursive: true });
+  }
+
+  if (!fs.existsSync(treesDir)) {
+    fs.mkdirSync(treesDir, { recursive: true });
   }
 
   outputFiles.forEach(
@@ -39,6 +75,8 @@ function mergeFiles(projectName, baseDir) {
       excludeFileTypes = [],
       excludeDirectories = [],
     }) => {
+      const tree = {};
+
       // Ensure all path-related and type-related fields are arrays
       includePaths = Array.isArray(includePaths)
         ? includePaths
@@ -93,10 +131,18 @@ function mergeFiles(projectName, baseDir) {
           const tokenCount = countTokens(fileContent);
           const comment = `# ${filePath} (Tokens: ${tokenCount})\n\n`;
           writeStream.write(comment + fileContent + "\n\n");
+          addToTree(tree, filePath);
         }
       });
 
       writeStream.end();
+
+      // Save the directory tree to a file
+      const treeFilePath = path.join(
+        treesDir,
+        `${name.replace(".md", ".tree.md")}`
+      );
+      fs.writeFileSync(treeFilePath, treeToString(tree));
     }
   );
 }

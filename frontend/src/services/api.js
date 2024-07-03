@@ -1,5 +1,3 @@
-// frontend/src/services/api.js
-
 export const fetchProjects = async () => {
   try {
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -173,7 +171,7 @@ export const getOutputFileContent = async (projectName, fileName) => {
 export const getProjectConfig = async (projectName) => {
   try {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const response = await fetch(`${apiUrl}/${projectName}/config`);
+    const response = await fetch(`${apiUrl}/config/${projectName}`);
     if (!response.ok) {
       throw new Error("Failed to fetch project config");
     }
@@ -188,7 +186,7 @@ export const getProjectConfig = async (projectName) => {
 export const updateProjectConfig = async (projectName, config) => {
   try {
     const apiUrl = process.env.REACT_APP_API_URL;
-    const response = await fetch(`${apiUrl}/${projectName}/config`, {
+    const response = await fetch(`${apiUrl}/config/${projectName}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -200,6 +198,38 @@ export const updateProjectConfig = async (projectName, config) => {
     }
   } catch (error) {
     console.error("Error updating project config:", error);
+    throw error;
+  }
+};
+
+export const getTreeFiles = async (projectName) => {
+  try {
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const response = await fetch(`${apiUrl}/trees/${projectName}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch tree files");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching tree files:", error);
+    throw error;
+  }
+};
+
+export const getTreeFileContent = async (projectName, treeFileName) => {
+  try {
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const response = await fetch(
+      `${apiUrl}/trees/${projectName}/${treeFileName}`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch tree file content");
+    }
+    const content = await response.text();
+    return content;
+  } catch (error) {
+    console.error("Error fetching tree file content:", error);
     throw error;
   }
 };

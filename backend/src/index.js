@@ -4,8 +4,7 @@ require("dotenv").config();
 const validateEnv = require("./utils/validateEnv");
 const express = require("express");
 const cors = require("cors");
-const fileRoutes = require("./routes/fileRoutes");
-const configRoutes = require("./routes/configRoutes");
+const routes = require("./routes"); // Import centralized routes
 
 validateEnv();
 
@@ -22,8 +21,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-app.use("/api/projects", fileRoutes); // Use file routes under /projects
-app.use("/api", configRoutes); // Use config routes
+app.use("/api", routes); // Use centralized routes
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
