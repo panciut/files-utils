@@ -11,6 +11,7 @@ const {
   getFilePaths,
 } = require("../utils/fileStorage");
 const mergeFiles = require("../utils/fileMerger");
+const { countTokens } = require("../utils/tokenizer");
 
 const baseDir = process.env.PROJECTS_BASE_PATH;
 
@@ -209,8 +210,8 @@ const getAllOutputFilesController = (req, res) => {
       .map((file) => {
         const filePath = path.join(outputDir, file);
         const content = fs.readFileSync(filePath, "utf-8");
-        const lines = content.split("\n").length;
-        return { name: file, lines };
+        const tokens = countTokens(content);
+        return { name: file, tokens };
       });
     res
       .status(200)

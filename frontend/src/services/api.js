@@ -144,7 +144,7 @@ export const getProjectOutputFiles = async (projectName) => {
     const data = await response.json();
     return data.files.map((file) => ({
       name: file.name,
-      lines: file.lines,
+      tokens: file.tokens,
       content: null, // Initialize content as null; will fetch later
     }));
   } catch (error) {

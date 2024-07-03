@@ -1,29 +1,38 @@
 // frontend/src/components/OutputFilesList.jsx
 
 import React, { useState } from 'react';
-import { OutputFilesListContainer, OutputFileItem, OutputFileName, CopyButton, OutputContent, LineCount, CopyDisplayedButton, OutputContentHeader } from './OutputFilesList.styles';
+import {
+    OutputFilesListContainer,
+    OutputFileItem,
+    OutputFileName,
+    CopyButton,
+    OutputContent,
+    TokenCount,
+    CopyDisplayedButton,
+    OutputContentHeader
+} from './OutputFilesList.styles';
 import copyIcon from '../assets/copy.svg'; // Ensure you have this asset
 
 const OutputFilesList = ({ files, onCopyContent, onFileClick }) => {
     const [selectedFileName, setSelectedFileName] = useState('');
     const [selectedFileContent, setSelectedFileContent] = useState('');
-    const [selectedFileLines, setSelectedFileLines] = useState(0);
+    const [selectedFileTokens, setSelectedFileTokens] = useState(0);
 
-    const handleFileClick = async (fileName, fileContent) => {
+    const handleFileClick = async (fileName, fileContent, tokenCount) => {
         if (fileName === selectedFileName) {
             // If the same file is clicked again, hide the display section
             setSelectedFileName('');
             setSelectedFileContent('');
-            setSelectedFileLines(0);
+            setSelectedFileTokens(0);
         } else {
             setSelectedFileName(fileName);
             if (fileContent) {
                 setSelectedFileContent(fileContent);
-                setSelectedFileLines(fileContent.split('\n').length);
+                setSelectedFileTokens(tokenCount);
             } else {
                 const content = await onFileClick(fileName);
                 setSelectedFileContent(content || '');
-                setSelectedFileLines(content ? content.split('\n').length : 0);
+                setSelectedFileTokens(tokenCount);
             }
         }
     };
@@ -39,8 +48,8 @@ const OutputFilesList = ({ files, onCopyContent, onFileClick }) => {
             <OutputFilesListContainer>
                 {files.map((file) => (
                     <OutputFileItem key={file.name}>
-                        <LineCount>{file.lines}</LineCount>
-                        <OutputFileName onClick={() => handleFileClick(file.name, file.content)}>
+                        <TokenCount>{file.tokens} tokens</TokenCount>
+                        <OutputFileName onClick={() => handleFileClick(file.name, file.content, file.tokens)}>
                             {file.name}
                         </OutputFileName>
                         <CopyButton onClick={() => handleCopyFileContent(file.name)}>
@@ -52,7 +61,7 @@ const OutputFilesList = ({ files, onCopyContent, onFileClick }) => {
             {selectedFileContent && (
                 <OutputContent>
                     <OutputContentHeader>
-                        <LineCount>{selectedFileLines} lines</LineCount>
+                        <TokenCount>{selectedFileTokens} tokens</TokenCount>
                         <CopyDisplayedButton onClick={() => onCopyContent(selectedFileContent)}>
                             <img src={copyIcon} alt="Copy" />
                         </CopyDisplayedButton>

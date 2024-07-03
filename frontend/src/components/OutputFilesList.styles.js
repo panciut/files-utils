@@ -25,7 +25,7 @@ export const OutputFileItem = styled.div`
   border-radius: 5px;
 `;
 
-export const LineCount = styled.div`
+export const TokenCount = styled.div`
   margin-right: 10px;
   color: ${theme.colors.darkGrey};
 `;

@@ -2,7 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getProjectDetails, getProjectFiles, mergeFiles, addFilePaths, removeFilePaths, getProjectOutputFiles, getOutputFileContent } from '../services/api';
+import {
+    getProjectDetails,
+    getProjectFiles,
+    mergeFiles,
+    addFilePaths,
+    removeFilePaths,
+    getProjectOutputFiles,
+    getOutputFileContent
+} from '../services/api';
 import FilesList from '../components/FilesList';
 import OutputFilesList from '../components/OutputFilesList';
 import ConfigModal from '../components/ConfigModal'; // Import ConfigModal
@@ -56,7 +64,7 @@ const ProjectPage = () => {
             await mergeFiles(projectName);
             alert('Files merged successfully');
             const outputs = await getProjectOutputFiles(projectName);
-            setOutputFiles(outputs);
+            setOutputFiles(outputs); // Update output files state after merging
         } catch (error) {
             console.error('Failed to merge files', error);
         }

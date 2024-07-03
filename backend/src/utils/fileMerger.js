@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { loadProjectConfig } = require("./config");
+const { countTokens } = require("./tokenizer");
 
 /**
  * Merges files for a project based on its configuration and paths.json.
@@ -89,7 +90,8 @@ function mergeFiles(projectName, baseDir) {
           !excludeDirectories.some((dir) => fileDir.includes(dir))
         ) {
           const fileContent = fs.readFileSync(filePath, "utf-8");
-          const comment = `# ${filePath}\n\n`;
+          const tokenCount = countTokens(fileContent);
+          const comment = `# ${filePath} (Tokens: ${tokenCount})\n\n`;
           writeStream.write(comment + fileContent + "\n\n");
         }
       });
